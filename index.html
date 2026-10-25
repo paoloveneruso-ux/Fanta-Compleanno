@@ -1,0 +1,903 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#15122a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Fanta-Compleanno</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+:root{
+  --bg:#15122a; --card:#211d3d; --card2:#2b2650; --line:#3a3466;
+  --text:#f5f2ff; --muted:#a8a1cf; --gold:#ffbe0b; --orange:#fb5607;
+  --pink:#ff006e; --violet:#8338ec; --ok:#2ec4b6; --err:#ef476f;
+  --r:16px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);
+  font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+body{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+a{color:var(--gold)}
+h1,h2,h3{margin:0 0 .4em;line-height:1.2}
+h2{font-size:1.15rem} h3{font-size:1rem}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px}
+header.top{position:sticky;top:0;z-index:5;background:linear-gradient(180deg,var(--bg) 70%,transparent);
+  padding:calc(12px + env(safe-area-inset-top)) 0 10px}
+header.top .wrap{display:flex;align-items:center;gap:10px}
+.logo{font-weight:800;font-size:1.2rem;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.logo span{background:linear-gradient(90deg,var(--gold),var(--orange),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:var(--card2);
+  border:1px solid var(--line);font-size:.85rem;color:var(--text);cursor:pointer;max-width:60vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin:0 0 12px}
+.muted{color:var(--muted)} .small{font-size:.85rem} .center{text-align:center}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.grow{flex:1;min-width:0}
+.btn{appearance:none;border:1px solid var(--line);background:var(--card2);color:var(--text);border-radius:12px;
+  padding:10px 14px;font:inherit;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none}
+.btn:active{transform:scale(.98)}
+.btn.primary{background:linear-gradient(135deg,var(--orange),var(--pink));border:none;color:#fff}
+.btn.gold{background:var(--gold);color:#221b00;border:none}
+.btn.danger{background:transparent;border-color:var(--err);color:var(--err)}
+.btn.ghost{background:transparent}
+.btn.sm{padding:6px 10px;font-size:.85rem;border-radius:10px}
+.btn.block{width:100%}
+.btn[disabled]{opacity:.5;pointer-events:none}
+input,textarea,select{width:100%;font:inherit;color:var(--text);background:#17142e;border:1px solid var(--line);
+  border-radius:10px;padding:10px 12px;outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--violet)}
+input[type=color]{padding:2px;height:42px;width:56px;flex:none}
+input[type=checkbox]{width:auto}
+label.f{display:block;font-size:.8rem;color:var(--muted);margin:8px 0 4px}
+textarea{min-height:70px;resize:vertical}
+.pts{font-weight:800;color:var(--gold);white-space:nowrap}
+.badge{display:inline-block;font-size:.72rem;font-weight:700;padding:3px 8px;border-radius:999px;background:var(--card2);border:1px solid var(--line)}
+.badge.ok{background:rgba(46,196,182,.15);border-color:var(--ok);color:var(--ok)}
+.badge.err{background:rgba(239,71,111,.12);border-color:var(--err);color:var(--err)}
+.badge.hid{color:var(--muted)}
+.obj{display:flex;gap:12px}
+.obj .body{flex:1;min-width:0}
+.obj.done{border-color:rgba(46,196,182,.5)}
+.thumb{width:76px;height:76px;border-radius:12px;object-fit:cover;background:#100e22;flex:none;cursor:pointer;border:1px solid var(--line)}
+.thumb.ph{display:flex;align-items:center;justify-content:center;font-size:1.6rem}
+.hero{background:linear-gradient(135deg,rgba(131,56,236,.35),rgba(255,0,110,.25));border:1px solid var(--line);
+  border-radius:var(--r);padding:16px;margin-bottom:14px;display:flex;gap:14px;align-items:center}
+.hero .big{font-size:2rem;font-weight:800;color:var(--gold);line-height:1}
+.rank{display:flex;align-items:center;gap:12px}
+.rank .pos{font-size:1.4rem;width:36px;text-align:center;font-weight:800}
+details>summary{list-style:none;cursor:pointer}
+details>summary::-webkit-details-marker{display:none}
+.list{margin:10px 0 0;padding:0;list-style:none}
+.list li{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-top:1px dashed var(--line);font-size:.9rem}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:rgba(21,18,42,.96);backdrop-filter:blur(10px);
+  border-top:1px solid var(--line);padding:8px 8px calc(8px + env(safe-area-inset-bottom));display:flex;justify-content:center;gap:6px}
+nav.tabs button{flex:1;max-width:180px;background:none;border:none;color:var(--muted);font:inherit;font-size:.78rem;font-weight:600;
+  padding:6px 4px;border-radius:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav.tabs button .i{font-size:1.35rem}
+nav.tabs button.on{color:var(--text);background:var(--card2)}
+.subtabs{display:flex;gap:6px;overflow-x:auto;padding:2px 0 12px;margin:0 -16px;padding-left:16px;padding-right:16px;scrollbar-width:none}
+.subtabs::-webkit-scrollbar{display:none}
+.subtabs button{flex:none;border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:999px;padding:8px 14px;font:inherit;font-size:.85rem;font-weight:600;cursor:pointer}
+.subtabs button.on{background:var(--violet);border-color:var(--violet);color:#fff}
+.pick{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:8px}
+.pick button{text-align:left}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left}
+th{color:var(--muted);font-weight:600;font-size:.78rem;text-transform:uppercase}
+td.n,th.n{text-align:right}
+.bar{height:10px;border-radius:99px;background:#17142e;overflow:hidden;border:1px solid var(--line)}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--ok),var(--gold),var(--err))}
+#toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top));transform:translateX(-50%) translateY(-150%);
+  z-index:50;background:var(--card2);border:1px solid var(--line);padding:10px 16px;border-radius:12px;transition:transform .25s;max-width:92vw;font-weight:600}
+#toast.show{transform:translateX(-50%) translateY(0)}
+#toast.ok{border-color:var(--ok)} #toast.err{border-color:var(--err)}
+#modal{position:fixed;inset:0;z-index:40;background:rgba(5,4,15,.75);display:none;align-items:center;justify-content:center;padding:16px}
+#modal.show{display:flex}
+#modal .box{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;width:100%;max-width:520px;max-height:90vh;overflow:auto}
+#modal img.view,#modal video.view{width:100%;max-height:65vh;object-fit:contain;border-radius:12px;background:#000}
+.prog{height:12px;border-radius:99px;background:#17142e;overflow:hidden;margin:12px 0}
+.prog>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--orange),var(--pink));transition:width .2s}
+.member{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px dashed var(--line);flex-wrap:wrap}
+.member .nm{flex:1;min-width:110px;font-weight:600}
+.member select{width:auto;max-width:150px;padding:6px 8px;font-size:.85rem}
+.spinner{width:34px;height:34px;border:4px solid var(--line);border-top-color:var(--gold);border-radius:50%;animation:sp 1s linear infinite;margin:40px auto}
+@keyframes sp{to{transform:rotate(360deg)}}
+.empty{padding:28px 10px;text-align:center;color:var(--muted)}
+</style>
+</head>
+<body>
+<div id="app"><div class="spinner"></div></div>
+<div id="toast"></div>
+<div id="modal" onclick="if(event.target===this && !S.busy) closeModal()"><div class="box" id="modalBox"></div></div>
+
+<script>
+/* =====================================================================
+   CONFIGURAZIONE — Supabase > Project Settings > API (o "Data API")
+   SUPABASE_KEY = chiave "publishable" (sb_publishable_...) oppure "anon public"
+   ===================================================================== */
+const SUPABASE_URL = 'https://ehicqjufsgekyafoiybe.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_f7BSP_kndrewJG79MkTUDQ_D1tCVpLs';
+
+const BUCKET = 'prove';
+const MAX_BYTES = 50 * 1024 * 1024;      // limite piano gratuito Supabase
+const STORAGE_QUOTA = 1024 * 1024 * 1024; // 1 GB piano gratuito
+
+/* ===================================================================== */
+const configured = !SUPABASE_URL.includes('XXXX') && !SUPABASE_KEY.startsWith('INSERISCI');
+const sb = configured ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: { persistSession: true, autoRefreshToken: true, storageKey: 'fanta-auth' }
+}) : null;
+
+const S = {
+  uid: null, me: null, isAdmin: false, settings: { title: 'Fanta-Compleanno' },
+  teams: [], participants: [], objectives: [], submissions: [], adjustments: [],
+  devices: [], deviceCounts: {}, tab: 'squadra', adminTab: 'squadre',
+  forcePick: false, drafts: {}, urlCache: {}, proofFilter: '', editingObj: null,
+  pendingRender: false, busy: false, fatal: null
+};
+
+/* ---------------------------------------------------------- utilità */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const fmtDate = d => new Date(d).toLocaleString('it-IT', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+const fmtSize = b => !b ? '—' : b < 1048576 ? (b / 1024).toFixed(0) + ' KB' : (b / 1048576).toFixed(1) + ' MB';
+const uuid = () => (crypto.randomUUID ? crypto.randomUUID() :
+  'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 3 | 8)).toString(16); }));
+const teamById = id => S.teams.find(t => t.id === id);
+const partById = id => S.participants.find(p => p.id === id);
+const objById = id => S.objectives.find(o => o.id === id);
+const validSubs = () => S.submissions.filter(s => !s.revoked);
+const isVideo = s => (s.file_type || '').startsWith('video/') || /\.(mov|mp4|m4v|webm|3gp)$/i.test(s.file_path || '');
+const errMsg = e => (e && (e.message || e.error_description || e.error)) || String(e);
+const slug = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'x';
+
+let toastT;
+function toast(msg, type = '') {
+  const t = $('#toast'); t.textContent = msg; t.className = 'show ' + type;
+  clearTimeout(toastT); toastT = setTimeout(() => t.className = type, 3200);
+}
+function showModal(html) { $('#modalBox').innerHTML = html; $('#modal').classList.add('show'); }
+function closeModal() {
+  $('#modal').classList.remove('show');
+  $('#modalBox').querySelectorAll('video').forEach(v => v.pause());
+  $('#modalBox').innerHTML = '';
+  if (S.pendingRender && !S.busy) setTimeout(() => render(false), 50);
+}
+function showProgress(label, p) {
+  if (!$('#progBar')) showModal(`<h3 id="progLbl"></h3><div class="prog"><i id="progBar"></i></div>
+    <p class="muted small" id="progSub">Tieni l'app aperta e lo schermo acceso finché non finisce.</p>`);
+  $('#progLbl').textContent = label;
+  $('#progBar').style.width = Math.round((p || 0) * 100) + '%';
+}
+
+function deviceLabel() {
+  const ua = navigator.userAgent;
+  const dev = /iPhone/.test(ua) ? 'iPhone' : /iPad/.test(ua) ? 'iPad' : /Android/.test(ua) ? 'Android' :
+    /Macintosh/.test(ua) ? 'Mac' : /Windows/.test(ua) ? 'Windows' : 'Dispositivo';
+  const br = /CriOS|Chrome/.test(ua) ? 'Chrome' : /FxiOS|Firefox/.test(ua) ? 'Firefox' : /Safari/.test(ua) ? 'Safari' : 'browser';
+  const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  return `${dev} · ${standalone ? 'icona Home' : br}`;
+}
+
+/* ---------------------------------------------------------- bozze dei campi (non si perdono con gli aggiornamenti live) */
+document.addEventListener('input', e => { const k = e.target.dataset && e.target.dataset.draft; if (k) S.drafts[k] = e.target.type === 'checkbox' ? e.target.checked : e.target.value; });
+document.addEventListener('change', e => { const k = e.target.dataset && e.target.dataset.draft; if (k) S.drafts[k] = e.target.type === 'checkbox' ? e.target.checked : e.target.value; });
+document.addEventListener('focusout', () => setTimeout(() => { if (S.pendingRender && !isTyping()) render(); }, 150));
+function restoreDrafts() {
+  document.querySelectorAll('[data-draft]').forEach(el => {
+    const k = el.dataset.draft; if (!(k in S.drafts)) return;
+    if (el.type === 'checkbox') el.checked = !!S.drafts[k]; else el.value = S.drafts[k];
+  });
+}
+const draft = (k, def = '') => (k in S.drafts ? S.drafts[k] : def);
+function clearDrafts(...keys) { keys.forEach(k => delete S.drafts[k]); }
+function isTyping() { const a = document.activeElement; return a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) && a.type !== 'file'; }
+
+/* ---------------------------------------------------------- avvio e dati */
+async function init() {
+  if (!configured) { S.fatal = 'config'; return render(true); }
+  try {
+    let { data: { session } } = await sb.auth.getSession();
+    if (!session) {
+      const { data, error } = await sb.auth.signInAnonymously();
+      if (error) throw error;
+      session = data.session;
+    }
+    S.uid = session.user.id;
+    await loadAll();
+    subscribeRealtime();
+  } catch (e) {
+    console.error(e);
+    S.fatal = errMsg(e);
+  }
+  render(true);
+}
+
+async function loadAll() {
+  const res = await Promise.all([
+    sb.from('settings').select('*').eq('id', 1).maybeSingle(),
+    sb.from('teams').select('*').order('created_at'),
+    sb.from('participants').select('*').order('name'),
+    sb.from('objectives').select('*').order('sort').order('created_at'),
+    sb.from('submissions').select('*').order('created_at', { ascending: false }),
+    sb.from('adjustments').select('*').order('created_at', { ascending: false }),
+    sb.from('participant_devices').select('*').eq('user_id', S.uid).maybeSingle(),
+    sb.rpc('is_admin'),
+    sb.rpc('device_counts')
+  ]);
+  const bad = res.find(r => r.error);
+  if (bad) {
+    const m = errMsg(bad.error);
+    if (/does not exist|schema cache|Could not find/i.test(m)) throw new Error('Database non configurato: esegui setup.sql nel SQL Editor di Supabase.');
+    throw bad.error;
+  }
+  const [st, tm, pa, ob, su, ad, md, adm, dc] = res.map(r => r.data);
+  S.settings = st || S.settings;
+  S.teams = tm || []; S.participants = pa || []; S.objectives = ob || [];
+  S.submissions = su || []; S.adjustments = ad || [];
+  S.me = md ? partById(md.participant_id) || null : null;
+  S.isAdmin = !!adm;
+  S.deviceCounts = {}; (dc || []).forEach(r => S.deviceCounts[r.participant_id] = Number(r.n));
+  if (S.isAdmin) {
+    const { data } = await sb.from('participant_devices').select('*').order('created_at');
+    S.devices = data || [];
+  }
+  if (!S.isAdmin && S.tab === 'admin') S.tab = 'squadra';
+  document.title = S.settings.title || 'Fanta-Compleanno';
+}
+
+async function reload() {
+  try { await loadAll(); } catch (e) { toast(errMsg(e), 'err'); }
+  render(true);
+}
+
+let rlT;
+function subscribeRealtime() {
+  sb.channel('fanta-db')
+    .on('postgres_changes', { event: '*', schema: 'public' }, () => {
+      clearTimeout(rlT);
+      rlT = setTimeout(async () => { try { await loadAll(); render(false); } catch (e) { } }, 700);
+    })
+    .subscribe();
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) reloadQuiet(); });
+}
+async function reloadQuiet() { try { await loadAll(); render(false); } catch (e) { } }
+
+/* ---------------------------------------------------------- punteggi */
+function adjSum(tid) { return S.adjustments.filter(a => a.team_id === tid).reduce((s, a) => s + a.points, 0); }
+function teamObjPts(tid) { return validSubs().filter(s => s.team_id === tid).reduce((s, x) => s + (x.points || 0), 0); }
+function teamScore(tid) { return teamObjPts(tid) + adjSum(tid); }
+function partScore(pid) { return validSubs().filter(s => s.participant_id === pid).reduce((s, x) => s + (x.points || 0), 0); }
+function partCount(pid) { return validSubs().filter(s => s.participant_id === pid).length; }
+function standings() {
+  const rows = S.teams.map(t => ({ t, pts: teamScore(t.id), obj: teamObjPts(t.id), bonus: adjSum(t.id), done: validSubs().filter(s => s.team_id === t.id).length }))
+    .sort((a, b) => b.pts - a.pts || b.done - a.done || a.t.name.localeCompare(b.t.name));
+  rows.forEach((r, i) => r.pos = i > 0 && r.pts === rows[i - 1].pts ? rows[i - 1].pos : i + 1);
+  return rows;
+}
+const medal = p => p === 1 ? '🥇' : p === 2 ? '🥈' : p === 3 ? '🥉' : p;
+const objsForTeam = tid => S.objectives.filter(o => o.active && (!o.team_id || o.team_id === tid));
+
+/* ---------------------------------------------------------- render */
+function render(force = true) {
+  if (!force && (isTyping() || S.busy || $('#modal').classList.contains('show'))) { S.pendingRender = true; return; }
+  S.pendingRender = false;
+  const app = $('#app');
+  if (S.fatal) { app.innerHTML = viewFatal(); return; }
+  app.innerHTML = ((!S.me && !S.isAdmin) || S.forcePick) ? viewPick() : viewMain();
+  restoreDrafts();
+  hydrateThumbs();
+}
+
+function viewFatal() {
+  if (S.fatal === 'config') return `<div class="wrap" style="padding-top:40px"><div class="card">
+    <h2>⚙️ App da configurare</h2><p class="muted">Apri <b>index.html</b> e inserisci in alto <code>SUPABASE_URL</code> e <code>SUPABASE_KEY</code> del tuo progetto Supabase.</p></div></div>`;
+  return `<div class="wrap" style="padding-top:40px"><div class="card"><h2>😕 Qualcosa non va</h2>
+    <p class="muted">${esc(S.fatal)}</p>
+    <p class="muted small">Se dice che gli accessi anonimi sono disabilitati: Supabase &gt; Authentication &gt; Sign In / Providers &gt; abilita <b>Anonymous sign-ins</b>.</p>
+    <button class="btn primary" onclick="location.reload()">Riprova</button></div></div>`;
+}
+
+function header() {
+  const team = S.me ? teamById(S.me.team_id) : null;
+  const who = S.me ? `<span class="dot" style="background:${esc(team ? team.color : '#777')}"></span>${esc(S.me.name)}${team ? ' · ' + esc(team.name) : ''}` : '👑 Admin';
+  return `<header class="top"><div class="wrap"><div class="logo"><span>${esc(S.settings.title)}</span></div>
+    <button class="chip" onclick="openMenu()">${who} ▾</button></div></header>`;
+}
+
+function viewPick() {
+  const groups = S.teams.map(t => ({ t, ps: S.participants.filter(p => p.team_id === t.id) })).filter(g => g.ps.length);
+  const loose = S.participants.filter(p => !p.team_id || !teamById(p.team_id));
+  if (loose.length) groups.push({ t: { name: 'Senza squadra', color: '#777' }, ps: loose });
+  const body = !S.participants.length
+    ? `<div class="card empty">🎈 Il gioco non è ancora pronto.<br>L'admin deve creare squadre e partecipanti.</div>`
+    : `<input id="pickSearch" placeholder="🔎 Cerca il tuo nome" oninput="filterPick(this.value)" autocomplete="off">` +
+      groups.map(g => `<div class="card pickgroup" style="margin-top:12px"><h3><span class="dot" style="background:${esc(g.t.color)}"></span> ${esc(g.t.name)}</h3>
+        <div class="pick">${g.ps.map(p => `<button class="btn" data-name="${esc(p.name.toLowerCase())}" onclick="pickMe('${p.id}')">${esc(p.name)}</button>`).join('')}</div></div>`).join('');
+  return `<div class="wrap" style="padding-top:calc(28px + env(safe-area-inset-top))">
+    <h1 class="logo" style="white-space:normal;font-size:1.7rem"><span>${esc(S.settings.title)}</span></h1>
+    <h2 style="margin-top:14px">Chi sei? 👋</h2>
+    <p class="muted small">Sceglilo una volta sola: questo telefono si ricorderà di te per tutta la durata del gioco.</p>
+    ${body}
+    <div class="center" style="margin:26px 0">
+      ${S.forcePick ? `<button class="btn ghost" onclick="S.forcePick=false;render()">← Indietro</button>` : ''}
+      ${S.isAdmin ? '' : `<button class="btn ghost sm" onclick="promptAdmin()">👑 Sono l'admin</button>`}
+    </div></div>`;
+}
+function filterPick(q) {
+  q = q.trim().toLowerCase();
+  document.querySelectorAll('.pickgroup').forEach(g => {
+    let any = false;
+    g.querySelectorAll('button[data-name]').forEach(b => { const ok = !q || b.dataset.name.includes(q); b.style.display = ok ? '' : 'none'; any = any || ok; });
+    g.style.display = any ? '' : 'none';
+  });
+}
+
+function viewMain() {
+  const tabs = [];
+  if (S.me) tabs.push(['squadra', '🎯', 'Obiettivi']);
+  tabs.push(['classifica', '🏆', 'Classifica']);
+  if (S.isAdmin) tabs.push(['admin', '👑', 'Admin']);
+  if (!tabs.find(t => t[0] === S.tab)) S.tab = tabs[0][0];
+  const content = S.tab === 'squadra' ? viewTeam() : S.tab === 'classifica' ? viewBoard() : viewAdmin();
+  return header() + `<main class="wrap">${content}</main>` +
+    `<nav class="tabs">${tabs.map(([k, i, l]) => `<button class="${S.tab === k ? 'on' : ''}" onclick="setTab('${k}')"><span class="i">${i}</span>${l}</button>`).join('')}</nav>`;
+}
+function setTab(k) { S.tab = k; render(); window.scrollTo(0, 0); }
+
+/* ---------------------------------------------------------- vista squadra */
+function viewTeam() {
+  const team = teamById(S.me.team_id);
+  if (!team) return `<div class="card empty">Non sei ancora in una squadra.<br>Chiedi all'admin di inserirti.</div>`;
+  const st = standings(); const me = st.find(r => r.t.id === team.id);
+  const objs = objsForTeam(team.id);
+  const subOf = o => S.submissions.find(s => s.objective_id === o.id && s.team_id === team.id && !s.revoked);
+  const sorted = [...objs].sort((a, b) => (subOf(a) ? 1 : 0) - (subOf(b) ? 1 : 0));
+  const done = objs.filter(subOf).length;
+  const cards = sorted.map(o => {
+    const s = subOf(o);
+    const wasRevoked = !s && S.submissions.some(x => x.objective_id === o.id && x.team_id === team.id && x.revoked);
+    const media = s ? thumbHtml(s) : '';
+    const status = s
+      ? `<div class="small" style="margin-top:6px"><span class="badge ok">✓ Completato</span> <span class="muted">da ${esc(partById(s.participant_id)?.name || '?')} · ${fmtDate(s.created_at)}</span></div>`
+      : `${wasRevoked ? `<div class="small" style="margin-top:6px"><span class="badge err">Prova precedente revocata dall'admin</span></div>` : ''}
+         <label class="btn primary sm" style="margin-top:10px">📷 Carica foto/video
+           <input type="file" accept="image/*,video/*" hidden onchange="uploadProof('${o.id}', this)"></label>`;
+    return `<div class="card obj ${s ? 'done' : ''}">${media}<div class="body">
+      <div class="row"><h3 class="grow" style="margin:0">${esc(o.title)}</h3><span class="pts">${o.points} pt</span></div>
+      ${o.description ? `<div class="muted small" style="margin-top:4px;white-space:pre-wrap">${esc(o.description)}</div>` : ''}
+      ${status}</div></div>`;
+  }).join('');
+  return `<div class="hero"><div class="grow"><div class="muted small">Squadra</div>
+      <h2 style="margin:2px 0"><span class="dot" style="background:${esc(team.color)}"></span> ${esc(team.name)}</h2>
+      <div class="muted small">Posizione ${me ? medal(me.pos) : '—'} su ${st.length} · ${done}/${objs.length} obiettivi</div></div>
+      <div class="center"><div class="big">${me ? me.pts : 0}</div><div class="muted small">punti</div></div></div>
+    ${cards || `<div class="card empty">Nessun obiettivo per ora. Restate sintonizzati! 👀</div>`}`;
+}
+
+function thumbHtml(s, cls = 'thumb') {
+  if (s.file_deleted) return `<div class="${cls} ph" title="File archiviato dall'admin">🗄️</div>`;
+  if (s.thumb_path) return `<img class="${cls}" data-path="${esc(s.thumb_path)}" alt="" onclick="viewSub('${s.id}')">`;
+  return `<div class="${cls} ph" onclick="viewSub('${s.id}')">${isVideo(s) ? '🎬' : '🖼️'}</div>`;
+}
+
+async function hydrateThumbs() {
+  const els = [...document.querySelectorAll('img[data-path]')];
+  if (!els.length) return;
+  const now = Date.now();
+  const need = [...new Set(els.map(e => e.dataset.path).filter(p => !(S.urlCache[p] && S.urlCache[p].exp > now)))];
+  if (need.length) {
+    const { data } = await sb.storage.from(BUCKET).createSignedUrls(need, 3600);
+    (data || []).forEach(d => { if (d.signedUrl && d.path) S.urlCache[d.path] = { url: d.signedUrl, exp: now + 3300e3 }; });
+  }
+  els.forEach(e => { const c = S.urlCache[e.dataset.path]; if (c && e.src !== c.url) e.src = c.url; });
+}
+
+async function viewSub(id) {
+  const s = S.submissions.find(x => x.id === id); if (!s || s.file_deleted) return;
+  showModal(`<div class="spinner"></div>`);
+  const { data, error } = await sb.storage.from(BUCKET).createSignedUrl(s.file_path, 1800);
+  if (error) { closeModal(); return toast('Non riesco ad aprire il file: ' + errMsg(error), 'err'); }
+  const o = objById(s.objective_id), t = teamById(s.team_id), p = partById(s.participant_id);
+  showModal(`${isVideo(s) ? `<video class="view" src="${esc(data.signedUrl)}" controls playsinline autoplay></video>` : `<img class="view" src="${esc(data.signedUrl)}" alt="">`}
+    <h3 style="margin-top:10px">${esc(o ? o.title : 'Obiettivo')}</h3>
+    <div class="muted small">${esc(t ? t.name : '')} · ${esc(p ? p.name : '?')} · ${fmtDate(s.created_at)} · ${fmtSize(s.file_size)}</div>
+    <div class="row" style="margin-top:12px">${S.isAdmin ? `<button class="btn gold" onclick="downloadOriginal('${s.id}')">⬇︎ Scarica originale</button>` : ''}
+    <button class="btn grow" onclick="closeModal()">Chiudi</button></div>`);
+}
+
+/* ---------------------------------------------------------- caricamento prova */
+function extOf(file) {
+  const m = (file.name || '').match(/\.([a-z0-9]{2,5})$/i);
+  if (m) return m[1].toLowerCase();
+  const t = (file.type || '').split('/')[1] || 'bin';
+  return t.replace('quicktime', 'mov').replace('jpeg', 'jpg').replace(/[^a-z0-9]/g, '').slice(0, 5) || 'bin';
+}
+
+function waitEvent(el, ev, ms) {
+  return new Promise((res, rej) => {
+    const t = setTimeout(() => rej(new Error('timeout')), ms);
+    el.addEventListener(ev, () => { clearTimeout(t); res(); }, { once: true });
+    el.addEventListener('error', () => { clearTimeout(t); rej(new Error('media error')); }, { once: true });
+  });
+}
+
+async function makeThumb(file) {
+  const MAX = 480; let url;
+  try {
+    url = URL.createObjectURL(file);
+    let src, w, h;
+    if ((file.type || '').startsWith('image/')) {
+      const img = new Image(); img.src = url; await waitEvent(img, 'load', 15000);
+      src = img; w = img.naturalWidth; h = img.naturalHeight;
+    } else if ((file.type || '').startsWith('video/') || /\.(mov|mp4|m4v)$/i.test(file.name)) {
+      const v = document.createElement('video');
+      v.muted = true; v.playsInline = true; v.preload = 'auto'; v.src = url; v.load();
+      await waitEvent(v, 'loadeddata', 8000);
+      v.currentTime = Math.min(0.5, (v.duration || 1) / 2);
+      await waitEvent(v, 'seeked', 5000);
+      src = v; w = v.videoWidth; h = v.videoHeight;
+    } else return null;
+    if (!w || !h) return null;
+    const k = Math.min(1, MAX / Math.max(w, h));
+    const c = document.createElement('canvas'); c.width = Math.round(w * k); c.height = Math.round(h * k);
+    c.getContext('2d').drawImage(src, 0, 0, c.width, c.height);
+    return await new Promise(r => c.toBlob(r, 'image/jpeg', 0.75));
+  } catch (e) { return null; }
+  finally { if (url) URL.revokeObjectURL(url); }
+}
+
+async function xhrUpload(path, file, onProgress) {
+  const { data: { session } } = await sb.auth.getSession();
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', `${SUPABASE_URL}/storage/v1/object/${BUCKET}/${path.split('/').map(encodeURIComponent).join('/')}`);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + session.access_token);
+    xhr.setRequestHeader('apikey', SUPABASE_KEY);
+    xhr.setRequestHeader('x-upsert', 'false');
+    xhr.upload.onprogress = e => { if (e.lengthComputable) onProgress(e.loaded / e.total); };
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) return resolve();
+      let m = 'HTTP ' + xhr.status;
+      try { const j = JSON.parse(xhr.responseText); m = j.message || j.error || m; } catch (e) { }
+      if (xhr.status === 413 || /size/i.test(m)) m = 'file troppo grande (max 50 MB)';
+      reject(new Error(m));
+    };
+    xhr.onerror = () => reject(new Error('errore di rete durante il caricamento'));
+    const fd = new FormData();
+    fd.append('cacheControl', '3600');
+    fd.append('', file);
+    xhr.send(fd);
+  });
+}
+
+async function uploadProof(oid, input) {
+  const file = input.files && input.files[0]; input.value = '';
+  if (!file || !S.me) return;
+  const tid = S.me.team_id, o = objById(oid);
+  if (!tid || !o) return toast('Obiettivo non disponibile', 'err');
+  if (file.size > MAX_BYTES) return alert(`Il file pesa ${fmtSize(file.size)}, il limite è 50 MB.\nPer i video: clip più corta o registrata in 1080p invece che 4K.`);
+  if (S.submissions.some(s => s.objective_id === oid && s.team_id === tid && !s.revoked)) return toast('La tua squadra ha già completato questo obiettivo');
+  S.busy = true;
+  const id = uuid(), path = `${tid}/${id}.${extOf(file)}`;
+  try {
+    showProgress('Preparazione…', 0);
+    const thumb = await makeThumb(file);
+    await xhrUpload(path, file, p => showProgress(`Caricamento… ${Math.round(p * 100)}%`, p));
+    showProgress('Quasi fatto…', 1);
+    let thumbPath = null;
+    if (thumb) {
+      thumbPath = `${tid}/t_${id}.jpg`;
+      const r = await sb.storage.from(BUCKET).upload(thumbPath, thumb, { contentType: 'image/jpeg' });
+      if (r.error) thumbPath = null;
+    }
+    const { error } = await sb.rpc('submit_proof', { p_objective: oid, p_path: path, p_thumb: thumbPath, p_type: file.type || '', p_size: file.size, p_name: file.name || '' });
+    if (error) throw error;
+    S.busy = false; closeModal();
+    toast(`Prova caricata! +${o.points} punti 🎉`, 'ok');
+  } catch (e) {
+    S.busy = false; closeModal();
+    alert('Caricamento non riuscito: ' + errMsg(e));
+  }
+  await reload();
+}
+
+/* ---------------------------------------------------------- classifica */
+function viewBoard() {
+  const st = standings();
+  if (!st.length) return `<div class="card empty">Nessuna squadra ancora.</div>`;
+  const myTeam = S.me && S.me.team_id;
+  return `<h2>🏆 Classifica</h2>` + st.map(r => {
+    const members = S.participants.filter(p => p.team_id === r.t.id).map(p => ({ p, pts: partScore(p.id) })).sort((a, b) => b.pts - a.pts);
+    const subs = validSubs().filter(s => s.team_id === r.t.id);
+    const adj = S.adjustments.filter(a => a.team_id === r.t.id);
+    return `<details class="card" ${r.t.id === myTeam ? 'style="border-color:var(--gold)"' : ''}><summary class="rank">
+      <div class="pos">${medal(r.pos)}</div><div class="grow"><b><span class="dot" style="background:${esc(r.t.color)}"></span> ${esc(r.t.name)}</b>
+      <div class="muted small">${r.done} obiettivi${r.bonus ? ` · bonus ${r.bonus > 0 ? '+' : ''}${r.bonus}` : ''}</div></div>
+      <div class="pts" style="font-size:1.3rem">${r.pts}</div></summary>
+      <ul class="list">${members.map(m => `<li><span>${esc(m.p.name)}</span><span class="pts">${m.pts}</span></li>`).join('') || '<li class="muted">Nessun membro</li>'}</ul>
+      ${subs.length ? `<div class="muted small" style="margin-top:10px">Obiettivi completati</div><ul class="list">${subs.map(s => { const o = objById(s.objective_id); return `<li><span>${esc(o ? o.title : 'Obiettivo segreto')}</span><span class="muted">+${s.points}</span></li>`; }).join('')}</ul>` : ''}
+      ${adj.length ? `<div class="muted small" style="margin-top:10px">Bonus / malus</div><ul class="list">${adj.map(a => `<li><span>${esc(a.reason || '—')}</span><span class="muted">${a.points > 0 ? '+' : ''}${a.points}</span></li>`).join('')}</ul>` : ''}
+    </details>`;
+  }).join('') + `<p class="muted small center">Tocca una squadra per i dettagli</p>`;
+}
+
+/* ---------------------------------------------------------- menu, accessi */
+function openMenu() {
+  showModal(`<h3>${S.me ? esc(S.me.name) : 'Menu'}</h3>
+    <div style="display:grid;gap:8px;margin-top:10px">
+      ${S.me ? `<button class="btn" onclick="closeModal();changeUser()">🔄 Non sono ${esc(S.me.name)} / cambia utente</button>` : `<button class="btn" onclick="closeModal();S.forcePick=true;render()">🎮 Partecipa come giocatore</button>`}
+      ${S.isAdmin ? `<button class="btn" onclick="closeModal();setTab('admin')">👑 Pannello admin</button>` : `<button class="btn" onclick="closeModal();promptAdmin()">👑 Accesso admin</button>`}
+      <button class="btn" onclick="closeModal();reload();toast('Aggiornato')">↻ Aggiorna dati</button>
+      <button class="btn ghost" onclick="closeModal()">Chiudi</button></div>
+    <p class="muted small" style="margin-top:14px">Consiglio: aggiungi l'app alla schermata Home (Condividi › Aggiungi a Home) per ritrovarla subito.</p>`);
+}
+
+async function changeUser() {
+  if (!confirm('Vuoi scollegare questo telefono dal tuo nome e sceglierne un altro?')) return;
+  await sb.from('participant_devices').delete().eq('user_id', S.uid);
+  S.me = null; S.forcePick = false; await reload();
+}
+
+async function pickMe(pid) {
+  const p = partById(pid); if (!p) return;
+  const n = S.deviceCounts[pid] || 0;
+  const msg = n > 0
+    ? `«${p.name}» è già attivo su ${n} altro dispositivo.\nSei davvero tu? (Va bene se hai cambiato telefono o stai usando l'icona sulla Home.)`
+    : `Confermi di essere ${p.name}?`;
+  if (!confirm(msg)) return;
+  const { error } = await sb.rpc('claim_participant', { p_participant: pid, p_label: deviceLabel() });
+  if (error) return toast(errMsg(error), 'err');
+  S.forcePick = false; S.tab = 'squadra';
+  await reload();
+  toast(`Ciao ${p.name}! 🎉`, 'ok');
+}
+
+function promptAdmin() {
+  showModal(`<h3>👑 Accesso admin</h3><form onsubmit="event.preventDefault();adminLogin()">
+    <input id="adminPin" type="password" inputmode="numeric" placeholder="PIN" autocomplete="off">
+    <div class="row" style="margin-top:12px"><button class="btn primary grow" type="submit">Entra</button>
+    <button class="btn" type="button" onclick="closeModal()">Annulla</button></div></form>`);
+  setTimeout(() => $('#adminPin') && $('#adminPin').focus(), 50);
+}
+async function adminLogin() {
+  const pin = $('#adminPin').value;
+  const { data, error } = await sb.rpc('admin_login', { p_pin: pin });
+  if (error) return toast(errMsg(error), 'err');
+  if (!data) return toast('PIN errato', 'err');
+  closeModal(); S.tab = 'admin'; S.forcePick = false;
+  await reload(); toast('Sei dentro come admin 👑', 'ok');
+}
+
+/* ===================================================================== ADMIN */
+async function run(q, okMsg) {
+  const { error, data } = await q;
+  if (error) { toast(errMsg(error), 'err'); return null; }
+  if (okMsg) toast(okMsg, 'ok');
+  await reload();
+  return data ?? true;
+}
+
+function viewAdmin() {
+  const tabs = [['squadre', '👥 Squadre'], ['obiettivi', '🎯 Obiettivi'], ['prove', '📸 Prove'], ['punteggi', '📊 Punteggi'], ['impostazioni', '⚙️ Impostazioni']];
+  const v = { squadre: adminTeams, obiettivi: adminObjectives, prove: adminProofs, punteggi: adminScores, impostazioni: adminSettings }[S.adminTab];
+  return `<div class="subtabs">${tabs.map(([k, l]) => `<button class="${S.adminTab === k ? 'on' : ''}" onclick="S.adminTab='${k}';render()">${l}</button>`).join('')}</div>${v()}`;
+}
+
+/* ---------- squadre e partecipanti */
+function teamOptions(sel, withNone = true) {
+  return (withNone ? `<option value="">— senza squadra —</option>` : '') +
+    S.teams.map(t => `<option value="${t.id}" ${t.id === sel ? 'selected' : ''}>${esc(t.name)}</option>`).join('');
+}
+function memberRow(p) {
+  const devs = S.devices.filter(d => d.participant_id === p.id);
+  return `<div class="member"><span class="nm">${esc(p.name)}</span>
+    <span class="badge ${devs.length ? 'ok' : 'hid'}" title="${esc(devs.map(d => d.device_label).join(', '))}">${devs.length ? '📱 ' + devs.length : 'non entrato'}</span>
+    <select onchange="moveParticipant('${p.id}', this.value)">${teamOptions(p.team_id)}</select>
+    <button class="btn sm ghost" onclick="renameParticipant('${p.id}')" title="Rinomina">✏️</button>
+    ${devs.length ? `<button class="btn sm ghost" onclick="disconnectDevices('${p.id}')" title="Scollega dispositivi">🔌</button>` : ''}
+    <button class="btn sm ghost" onclick="deleteParticipant('${p.id}')" title="Elimina">🗑</button></div>`;
+}
+function adminTeams() {
+  const loose = S.participants.filter(p => !p.team_id || !teamById(p.team_id));
+  return `<div class="card"><h3>Nuova squadra</h3><div class="row">
+      <input class="grow" data-draft="t-name" id="t-name" placeholder="Nome squadra" style="flex:1">
+      <input type="color" data-draft="t-color" id="t-color" value="${esc(draft('t-color', randomColor()))}">
+      <button class="btn primary" onclick="addTeam()">Crea</button></div></div>
+    ${S.teams.map(t => {
+      const ps = S.participants.filter(p => p.team_id === t.id);
+      return `<div class="card"><div class="row">
+        <input type="color" value="${esc(t.color)}" onchange="run(sb.from('teams').update({color:this.value}).eq('id','${t.id}'))">
+        <h3 class="grow" style="margin:0">${esc(t.name)} <span class="muted small">(${ps.length})</span></h3>
+        <button class="btn sm ghost" onclick="renameTeam('${t.id}')">✏️</button>
+        <button class="btn sm ghost" onclick="deleteTeam('${t.id}')">🗑</button></div>
+        ${ps.map(memberRow).join('')}
+        <label class="f">Aggiungi partecipanti (uno per riga)</label>
+        <textarea data-draft="p-new-${t.id}" id="p-new-${t.id}" placeholder="Mario&#10;Giulia&#10;…"></textarea>
+        <button class="btn sm" style="margin-top:8px" onclick="addParticipants('${t.id}')">+ Aggiungi a ${esc(t.name)}</button></div>`;
+    }).join('')}
+    <div class="card"><h3>Senza squadra <span class="muted small">(${loose.length})</span></h3>
+      ${loose.map(memberRow).join('') || '<div class="muted small">Nessuno</div>'}
+      <label class="f">Aggiungi partecipanti senza squadra (uno per riga)</label>
+      <textarea data-draft="p-new-none" id="p-new-none"></textarea>
+      <button class="btn sm" style="margin-top:8px" onclick="addParticipants('')">+ Aggiungi</button></div>
+    <p class="muted small">📱 = dispositivi collegati a quella persona. 🔌 scollega (es. telefono perso o nome scelto per sbaglio).</p>`;
+}
+function randomColor() { const c = ['#FB5607', '#FF006E', '#8338EC', '#3A86FF', '#FFBE0B', '#2EC4B6', '#06D6A0', '#EF476F']; return c[S.teams.length % c.length]; }
+async function addTeam() {
+  const name = ($('#t-name').value || '').trim(); if (!name) return toast('Scrivi un nome');
+  clearDrafts('t-name', 't-color');
+  await run(sb.from('teams').insert({ name, color: $('#t-color').value }), 'Squadra creata');
+}
+async function renameTeam(id) {
+  const t = teamById(id); const n = prompt('Nuovo nome squadra', t.name);
+  if (n && n.trim()) await run(sb.from('teams').update({ name: n.trim() }).eq('id', id));
+}
+async function deleteTeam(id) {
+  const t = teamById(id);
+  if (!confirm(`Eliminare la squadra «${t.name}»?\nI membri restano senza squadra; prove, file e bonus di questa squadra vengono cancellati.`)) return;
+  try { await removePaths(await listFolder(id)); } catch (e) { }
+  await run(sb.from('teams').delete().eq('id', id), 'Squadra eliminata');
+}
+async function addParticipants(tid) {
+  const key = 'p-new-' + (tid || 'none');
+  const names = ($('#' + key).value || '').split('\n').map(s => s.trim()).filter(Boolean);
+  if (!names.length) return toast('Scrivi almeno un nome');
+  const existing = new Set(S.participants.map(p => p.name.toLowerCase()));
+  const dup = names.filter(n => existing.has(n.toLowerCase()));
+  if (dup.length && !confirm(`Esistono già: ${dup.join(', ')}.\nAggiungerli comunque?`)) return;
+  clearDrafts(key);
+  await run(sb.from('participants').insert(names.map(name => ({ name, team_id: tid || null }))), `${names.length} aggiunti`);
+}
+async function moveParticipant(pid, tid) { await run(sb.from('participants').update({ team_id: tid || null }).eq('id', pid), 'Spostato'); }
+async function renameParticipant(pid) {
+  const p = partById(pid); const n = prompt('Nuovo nome', p.name);
+  if (n && n.trim()) await run(sb.from('participants').update({ name: n.trim() }).eq('id', pid));
+}
+async function disconnectDevices(pid) {
+  const p = partById(pid);
+  if (!confirm(`Scollegare tutti i dispositivi di ${p.name}? Dovrà riscegliere il nome all'apertura.`)) return;
+  await run(sb.from('participant_devices').delete().eq('participant_id', pid), 'Dispositivi scollegati');
+}
+async function deleteParticipant(pid) {
+  const p = partById(pid);
+  if (!confirm(`Eliminare ${p.name}? Le prove caricate restano alla squadra.`)) return;
+  await run(sb.from('participants').delete().eq('id', pid), 'Eliminato');
+}
+
+/* ---------- obiettivi */
+function adminObjectives() {
+  const ed = S.editingObj ? objById(S.editingObj) : null;
+  const doneBy = o => S.submissions.filter(s => s.objective_id === o.id && !s.revoked).length;
+  const target = o => o.team_id ? 1 : S.teams.length;
+  return `<div class="card" id="objForm"><h3>${ed ? '✏️ Modifica obiettivo' : 'Nuovo obiettivo'}</h3>
+      <label class="f">Titolo</label><input data-draft="o-title" id="o-title" placeholder="Es. Foto con un vigile in divisa">
+      <label class="f">Descrizione / regole (facoltativa)</label><textarea data-draft="o-desc" id="o-desc"></textarea>
+      <div class="row"><div style="width:110px"><label class="f">Punti</label><input data-draft="o-points" id="o-points" type="number" inputmode="numeric" value="10"></div>
+      <div class="grow"><label class="f">Per quale squadra</label><select data-draft="o-team" id="o-team"><option value="">Tutte le squadre</option>${teamOptions('', false)}</select></div></div>
+      <label class="row small" style="margin-top:10px"><input type="checkbox" data-draft="o-active" id="o-active" checked> Visibile ai giocatori</label>
+      <div class="row" style="margin-top:12px"><button class="btn primary grow" onclick="saveObjective()">${ed ? 'Salva modifiche' : 'Crea obiettivo'}</button>
+      ${ed ? `<button class="btn" onclick="cancelEditObj()">Annulla</button>` : ''}</div></div>
+    ${S.objectives.map((o, i) => `<div class="card" style="${o.active ? '' : 'opacity:.6'}"><div class="row">
+      <div class="grow"><b>${esc(o.title)}</b> <span class="pts">${o.points} pt</span>
+        <div class="small muted">${o.team_id ? '🎯 ' + esc(teamById(o.team_id)?.name || '?') : '🌍 Tutte le squadre'} · completato ${doneBy(o)}/${target(o)}
+        ${o.active ? '' : ' · <span class="badge hid">nascosto</span>'}</div>
+        ${o.description ? `<div class="small muted" style="white-space:pre-wrap;margin-top:4px">${esc(o.description)}</div>` : ''}</div></div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn sm ghost" onclick="moveObj('${o.id}',-1)" ${i === 0 ? 'disabled' : ''}>↑</button>
+        <button class="btn sm ghost" onclick="moveObj('${o.id}',1)" ${i === S.objectives.length - 1 ? 'disabled' : ''}>↓</button>
+        <button class="btn sm" onclick="editObjective('${o.id}')">✏️ Modifica</button>
+        <button class="btn sm" onclick="run(sb.from('objectives').update({active:${!o.active}}).eq('id','${o.id}'))">${o.active ? '🙈 Nascondi' : '👁 Mostra'}</button>
+        <button class="btn sm danger" onclick="deleteObjective('${o.id}')">🗑</button></div></div>`).join('') || '<div class="card empty">Nessun obiettivo ancora.</div>'}`;
+}
+function editObjective(id) {
+  const o = objById(id); S.editingObj = id;
+  Object.assign(S.drafts, { 'o-title': o.title, 'o-desc': o.description || '', 'o-points': String(o.points), 'o-team': o.team_id || '', 'o-active': o.active });
+  render(); $('#objForm').scrollIntoView({ behavior: 'smooth' });
+}
+function cancelEditObj() { S.editingObj = null; clearDrafts('o-title', 'o-desc', 'o-points', 'o-team', 'o-active'); render(); }
+async function saveObjective() {
+  const title = $('#o-title').value.trim(); if (!title) return toast('Serve un titolo');
+  const points = parseInt($('#o-points').value, 10); if (isNaN(points)) return toast('Punti non validi');
+  const row = { title, description: $('#o-desc').value.trim() || null, points, team_id: $('#o-team').value || null, active: $('#o-active').checked };
+  let ok;
+  if (S.editingObj) ok = await run(sb.from('objectives').update(row).eq('id', S.editingObj), 'Obiettivo aggiornato');
+  else ok = await run(sb.from('objectives').insert({ ...row, sort: S.objectives.reduce((m, o) => Math.max(m, o.sort), 0) + 1 }), 'Obiettivo creato');
+  if (ok) { S.editingObj = null; clearDrafts('o-title', 'o-desc', 'o-points', 'o-team', 'o-active'); render(); }
+}
+async function moveObj(id, dir) {
+  const list = [...S.objectives]; const i = list.findIndex(o => o.id === id); const j = i + dir;
+  if (j < 0 || j >= list.length) return;
+  [list[i], list[j]] = [list[j], list[i]];
+  await Promise.all(list.map((o, k) => o.sort !== k ? sb.from('objectives').update({ sort: k }).eq('id', o.id) : null));
+  await reload();
+}
+async function deleteObjective(id) {
+  const o = objById(id); const subs = S.submissions.filter(s => s.objective_id === id);
+  if (!confirm(`Eliminare «${o.title}»?${subs.length ? `\nAttenzione: ${subs.length} prove collegate (e i relativi punti) verranno cancellate.` : ''}`)) return;
+  try { await removePaths(subs.flatMap(s => [s.file_path, s.thumb_path]).filter(Boolean)); } catch (e) { }
+  await run(sb.from('objectives').delete().eq('id', id), 'Obiettivo eliminato');
+}
+
+/* ---------- prove */
+function filteredProofs() { return S.submissions.filter(s => !S.proofFilter || s.team_id === S.proofFilter); }
+function adminProofs() {
+  const list = filteredProofs();
+  const avail = list.filter(s => !s.file_deleted);
+  return `<div class="card"><div class="row"><select class="grow" style="flex:1" onchange="S.proofFilter=this.value;render()">
+      <option value="">Tutte le squadre (${S.submissions.length})</option>${S.teams.map(t => `<option value="${t.id}" ${S.proofFilter === t.id ? 'selected' : ''}>${esc(t.name)}</option>`).join('')}</select>
+      <button class="btn gold" onclick="zipProofs()" ${avail.length ? '' : 'disabled'}>⬇︎ ZIP (${avail.length})</button></div>
+      <p class="muted small" style="margin:8px 0 0">Gli originali sono scaricati senza ricompressione. ZIP: ${fmtSize(avail.reduce((a, s) => a + (s.file_size || 0), 0))}</p></div>
+    ${list.map(s => {
+      const o = objById(s.objective_id), t = teamById(s.team_id), p = partById(s.participant_id);
+      return `<div class="card obj" style="${s.revoked ? 'opacity:.6' : ''}">${thumbHtml(s)}<div class="body">
+        <div class="row"><b class="grow">${esc(o ? o.title : '?')}</b><span class="pts">${s.revoked ? '0' : '+' + s.points}</span></div>
+        <div class="small muted"><span class="dot" style="background:${esc(t ? t.color : '#777')}"></span> ${esc(t ? t.name : '?')} · ${esc(p ? p.name : '?')} · ${fmtDate(s.created_at)} · ${fmtSize(s.file_size)}</div>
+        <div style="margin-top:4px">${s.revoked ? '<span class="badge err">revocata</span> ' : ''}${s.file_deleted ? '<span class="badge hid">file eliminato</span>' : ''}</div>
+        <div class="row" style="margin-top:8px">
+          ${s.file_deleted ? '' : `<button class="btn sm gold" onclick="downloadOriginal('${s.id}')">⬇︎ Originale</button>`}
+          <button class="btn sm" onclick="toggleRevoke('${s.id}')">${s.revoked ? '↩︎ Ripristina' : '⛔ Revoca'}</button>
+          ${s.file_deleted ? '' : `<button class="btn sm ghost" onclick="deleteFile('${s.id}')" title="Elimina file per liberare spazio">🗑 File</button>`}</div></div></div>`;
+    }).join('') || '<div class="card empty">Nessuna prova caricata.</div>'}`;
+}
+function niceName(s) {
+  const o = objById(s.objective_id), t = teamById(s.team_id), p = partById(s.participant_id);
+  const d = new Date(s.created_at); const pad = n => String(n).padStart(2, '0');
+  const ts = `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}`;
+  const ext = (s.file_path.match(/\.([a-z0-9]+)$/i) || [, 'bin'])[1];
+  return `${slug(t && t.name)}_${slug(o && o.title)}_${slug(p && p.name)}_${ts}.${ext}`;
+}
+async function downloadOriginal(id) {
+  const s = S.submissions.find(x => x.id === id); if (!s) return;
+  const { data, error } = await sb.storage.from(BUCKET).createSignedUrl(s.file_path, 600, { download: niceName(s) });
+  if (error) return toast(errMsg(error), 'err');
+  const a = document.createElement('a'); a.href = data.signedUrl; a.rel = 'noopener';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+async function toggleRevoke(id) {
+  const s = S.submissions.find(x => x.id === id);
+  if (!s.revoked && !confirm('Revocare questa prova? La squadra perde i punti e potrà ricaricarne un\'altra.')) return;
+  const ok = await run(sb.from('submissions').update({ revoked: !s.revoked }).eq('id', id), s.revoked ? 'Prova ripristinata' : 'Prova revocata');
+  if (!ok && s.revoked) toast('Non ripristinabile: la squadra ha già caricato una nuova prova per questo obiettivo', 'err');
+}
+async function deleteFile(id) {
+  const s = S.submissions.find(x => x.id === id);
+  if (!confirm('Hai già scaricato l\'originale?\nIl file viene eliminato per liberare spazio; i punti restano.')) return;
+  const { error } = await sb.storage.from(BUCKET).remove([s.file_path, s.thumb_path].filter(Boolean));
+  if (error) return toast(errMsg(error), 'err');
+  await run(sb.from('submissions').update({ file_deleted: true }).eq('id', id), 'File eliminato');
+}
+async function zipProofs() {
+  const list = filteredProofs().filter(s => !s.file_deleted);
+  const total = list.reduce((a, s) => a + (s.file_size || 0), 0);
+  if (total > 400 * 1048576 && !confirm(`Lo ZIP pesa circa ${fmtSize(total)}. Su telefono potrebbe non farcela: meglio da computer. Continuare?`)) return;
+  S.busy = true;
+  const zip = new JSZip(); let done = 0, failed = 0;
+  try {
+    for (const s of list) {
+      showProgress(`Scarico ${done + 1}/${list.length}…`, done / list.length);
+      const { data, error } = await sb.storage.from(BUCKET).download(s.file_path);
+      if (error || !data) failed++;
+      else zip.file(`${slug(teamById(s.team_id)?.name)}/${niceName(s)}`, data, { binary: true });
+      done++;
+    }
+    showProgress('Creo lo ZIP…', 1);
+    const blob = await zip.generateAsync({ type: 'blob', compression: 'STORE' });
+    const team = S.proofFilter ? slug(teamById(S.proofFilter)?.name) : 'tutte';
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `prove_${team}.zip`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+    S.busy = false; closeModal();
+    toast(failed ? `ZIP pronto, ${failed} file non scaricati` : 'ZIP pronto ✅', failed ? 'err' : 'ok');
+  } catch (e) { S.busy = false; closeModal(); alert('Errore ZIP: ' + errMsg(e)); }
+}
+
+/* ---------- punteggi */
+function adminScores() {
+  const st = standings();
+  const people = S.participants.map(p => ({ p, pts: partScore(p.id), n: partCount(p.id) })).sort((a, b) => b.pts - a.pts || a.p.name.localeCompare(b.p.name));
+  return `<div class="card"><h3>Squadre</h3><table><tr><th>#</th><th>Squadra</th><th class="n">Obiettivi</th><th class="n">Bonus</th><th class="n">Tot</th></tr>
+      ${st.map(r => `<tr><td>${r.pos}</td><td><span class="dot" style="background:${esc(r.t.color)}"></span> ${esc(r.t.name)}</td><td class="n">${r.obj} <span class="muted small">(${r.done})</span></td><td class="n">${r.bonus}</td><td class="n pts">${r.pts}</td></tr>`).join('')}</table></div>
+    <div class="card"><h3>Bonus / malus</h3>
+      <div class="row"><select data-draft="a-team" id="a-team" class="grow" style="flex:1">${teamOptions('', false)}</select>
+      <input data-draft="a-pts" id="a-pts" type="number" inputmode="numeric" placeholder="±pt" style="width:90px"></div>
+      <input data-draft="a-reason" id="a-reason" placeholder="Motivo (es. penalità ritardo)" style="margin-top:8px">
+      <button class="btn primary block" style="margin-top:8px" onclick="addAdjustment()">Applica</button>
+      <ul class="list">${S.adjustments.map(a => `<li><span>${esc(teamById(a.team_id)?.name || '?')} · ${esc(a.reason || '—')} <span class="muted small">${fmtDate(a.created_at)}</span></span>
+        <span><b>${a.points > 0 ? '+' : ''}${a.points}</b> <button class="btn sm ghost" onclick="delAdjustment('${a.id}')">✕</button></span></li>`).join('')}</ul></div>
+    <div class="card"><h3>Partecipanti</h3><table><tr><th>Nome</th><th>Squadra</th><th class="n">Prove</th><th class="n">Punti</th></tr>
+      ${people.map(x => `<tr><td>${esc(x.p.name)}</td><td class="small">${esc(teamById(x.p.team_id)?.name || '—')}</td><td class="n">${x.n}</td><td class="n pts">${x.pts}</td></tr>`).join('')}</table>
+      <p class="muted small">Punti personali = punti degli obiettivi di cui ha caricato la prova.</p></div>`;
+}
+async function addAdjustment() {
+  const team_id = $('#a-team').value, points = parseInt($('#a-pts').value, 10);
+  if (!team_id) return toast('Scegli una squadra'); if (isNaN(points) || !points) return toast('Inserisci i punti (anche negativi)');
+  clearDrafts('a-pts', 'a-reason');
+  await run(sb.from('adjustments').insert({ team_id, points, reason: $('#a-reason').value.trim() || null }), 'Applicato');
+}
+async function delAdjustment(id) { if (confirm('Eliminare questo bonus/malus?')) await run(sb.from('adjustments').delete().eq('id', id)); }
+
+/* ---------- impostazioni e reset */
+function adminSettings() {
+  const used = S.submissions.filter(s => !s.file_deleted).reduce((a, s) => a + (s.file_size || 0), 0);
+  const pct = Math.min(100, used / STORAGE_QUOTA * 100);
+  return `<div class="card"><h3>Nome del gioco</h3><div class="row">
+      <input class="grow" style="flex:1" data-draft="s-title" id="s-title" value="${esc(S.settings.title)}">
+      <button class="btn" onclick="saveTitle()">Salva</button></div></div>
+    <div class="card"><h3>Spazio file</h3><div class="bar"><i style="width:${pct}%"></i></div>
+      <p class="small muted">${fmtSize(used)} usati su 1 GB (${pct.toFixed(0)}%). Per liberare spazio: scarica gli originali e usa "🗑 File" nelle Prove.</p></div>
+    <div class="card"><h3>Cambia PIN admin</h3>
+      <input id="pin1" type="password" inputmode="numeric" placeholder="Nuovo PIN (min 4)">
+      <input id="pin2" type="password" inputmode="numeric" placeholder="Ripeti PIN" style="margin-top:8px">
+      <button class="btn block" style="margin-top:8px" onclick="changePin()">Cambia PIN</button></div>
+    <div class="card" style="border-color:var(--err)"><h3>⚠️ Reset</h3>
+      <p class="small muted"><b>Azzera partita</b>: cancella prove, file e bonus. Restano squadre, partecipanti e obiettivi (ideale dopo le prove generali).</p>
+      <button class="btn danger block" onclick="doReset(false)">Azzera partita</button>
+      <p class="small muted" style="margin-top:14px"><b>Reset totale</b>: cancella anche squadre, partecipanti, obiettivi e scollega tutti i telefoni.</p>
+      <button class="btn danger block" onclick="doReset(true)">Reset totale</button></div>
+    <button class="btn ghost block" onclick="adminLogout()">Esci dalla modalità admin su questo dispositivo</button>`;
+}
+async function saveTitle() {
+  const title = $('#s-title').value.trim(); if (!title) return;
+  clearDrafts('s-title');
+  await run(sb.from('settings').update({ title }).eq('id', 1), 'Salvato');
+}
+async function changePin() {
+  const a = $('#pin1').value, b = $('#pin2').value;
+  if (a.length < 4) return toast('Almeno 4 caratteri', 'err'); if (a !== b) return toast('I PIN non coincidono', 'err');
+  const { error } = await sb.rpc('admin_set_pin', { p_new: a });
+  if (error) return toast(errMsg(error), 'err');
+  $('#pin1').value = $('#pin2').value = ''; toast('PIN cambiato ✅', 'ok');
+}
+async function listFolder(folder) {
+  const out = []; let offset = 0;
+  while (true) {
+    const { data, error } = await sb.storage.from(BUCKET).list(folder, { limit: 1000, offset });
+    if (error) throw error;
+    (data || []).forEach(x => { if (x.id) out.push(`${folder}/${x.name}`); });
+    if (!data || data.length < 1000) break; offset += 1000;
+  }
+  return out;
+}
+async function listAllFiles() {
+  const { data, error } = await sb.storage.from(BUCKET).list('', { limit: 1000 });
+  if (error) throw error;
+  const out = [];
+  for (const f of data || []) { if (f.id) out.push(f.name); else out.push(...await listFolder(f.name)); }
+  return out;
+}
+async function removePaths(paths) {
+  for (let i = 0; i < paths.length; i += 100) {
+    const { error } = await sb.storage.from(BUCKET).remove(paths.slice(i, i + 100));
+    if (error) throw error;
+  }
+}
+async function doReset(full) {
+  const word = full ? 'RESET TOTALE' : 'AZZERA';
+  const ans = prompt(`${full ? 'Cancella TUTTO: squadre, partecipanti, obiettivi, prove, file.' : 'Cancella tutte le prove, i file e i bonus.'}\nOperazione irreversibile. Scrivi ${word} per confermare:`);
+  if ((ans || '').trim().toUpperCase() !== word) return toast('Reset annullato');
+  S.busy = true;
+  try {
+    showProgress('Elimino i file…', 0.2);
+    await removePaths(await listAllFiles());
+    showProgress('Azzero il database…', 0.8);
+    const { error } = await sb.rpc('admin_reset', { p_full: full });
+    if (error) throw error;
+    S.busy = false; closeModal(); S.urlCache = {};
+    toast('Reset completato', 'ok');
+  } catch (e) { S.busy = false; closeModal(); alert('Reset non riuscito: ' + errMsg(e)); }
+  await reload();
+}
+async function adminLogout() {
+  if (!confirm('Uscire dalla modalità admin su questo dispositivo? Potrai rientrare col PIN.')) return;
+  await sb.rpc('admin_logout'); S.tab = 'classifica'; await reload();
+}
+
+init();
+</script>
+</body>
+</html>
