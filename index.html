@@ -554,15 +554,12 @@ function viewIntol() {
         <div class="row"><button class="btn" onclick="S.det.seats=Math.max(0,S.det.seats-1);render()">−</button>
         <b style="font-size:1.4rem;min-width:40px;text-align:center">${d.seats}</b>
         <button class="btn" onclick="S.det.seats=Math.min(8,S.det.seats+1);render()">+</button></div>
-        ${myPassengers.length ? `<p class="small" style="margin:10px 0 0">Vengono con te: <b>${myPassengers.map(c => esc(c.name)).join(', ')}</b></p>` : ''}` : ''}
+        <p class="small" style="margin:10px 0 0">${myPassengers.length ? `Vengono con te: <b>${myPassengers.map(c => esc(c.name)).join(', ')}</b>. ` : ''}Chi viaggia con te lo indichi dopo, dalla tab 🚗 Passaggi.</p>` : ''}
       ${d.car === 'no' ? `<label class="f">Ti sei già organizzato con qualcuno?</label>${rideSelect}` : ''}
       <p class="muted small" style="margin:10px 0 0">Auto e accompagnatore puoi aggiornarli quando vuoi dal menu in alto.</p></div>
     <button class="btn primary block" onclick="saveIntol()">${S.editIntol ? 'Salva' : 'Salva e continua'}</button>
     <button class="btn ghost block" style="margin:8px 0 30px" onclick="${S.editIntol && g.details_done ? 'S.editIntol=false;S.det=null;render()' : 'S.editRsvp=true;render()'}">${S.editIntol && g.details_done ? 'Annulla' : '← Cambia risposta all\'invito'}</button>
   </div>`;
-}
-function freeSeats(c) {
-  return Math.max(0, (c.car_seats || 0) - S.carpool.filter(x => x.ride_with === c.participant_id).reduce((n, x) => n + 1 + (x.plus_one ? 1 : 0), 0));
 }
 function toggleTag(t) {
   const set = new Set(S.det.tags);
@@ -591,31 +588,105 @@ async function saveIntol() {
 }
 
 /* ---------- passaggi */
+function usedSeats(c) {
+  return S.carpool.filter(x => x.ride_with === c.participant_id).reduce((n, x) => n + 1 + (x.plus_one ? 1 : 0), 0) + (c.car_others || []).length;
+}
+function freeSeats(c) { return Math.max(0, (c.car_seats || 0) - usedSeats(c)); }
+function carCrew(c) {   // chi c'è in un'auto, autista compreso
+  const crew = [`<b>${esc(c.name)}</b> <span class="muted small">(guida)</span>`];
+  if (c.plus_one) crew.push(`${esc(c.plus_one_name || '+1')} <span class="muted small">(+1 di ${esc(c.name.split(' ')[0])})</span>`);
+  S.carpool.filter(x => x.ride_with === c.participant_id).forEach(x => {
+    crew.push(esc(x.name));
+    if (x.plus_one) crew.push(`${esc(x.plus_one_name || '+1')} <span class="muted small">(+1 di ${esc(x.name.split(' ')[0])})</span>`);
+  });
+  (c.car_others || []).forEach(o => crew.push(`${esc(o)} <span class="muted small">(non in app)</span>`));
+  return crew;
+}
+function myCarEditor(mine) {
+  const pas = S.carpool.filter(x => x.ride_with === mine.participant_id);
+  const others = mine.car_others || [];
+  const used = usedSeats(mine), tot = mine.car_seats || 0;
+  const cand = S.participants.filter(p => p.id !== mine.participant_id && !pas.some(x => x.participant_id === p.id))
+    .map(p => {
+      const c = S.carpool.find(x => x.participant_id === p.id);
+      const note = !c ? ' · non ha risposto' : c.car === 'si' ? ' · ha l\'auto' : c.ride_with ? ` · va con ${(partById(c.ride_with)?.name || '?').split(' ')[0]}` : '';
+      return `<option value="${p.id}">${esc(p.name)}${c && c.plus_one ? ' (+1)' : ''}${esc(note)}</option>`;
+    }).join('');
+  return `<div class="card" style="border-color:var(--ball)"><div class="row"><h3 class="grow" style="margin:0">🚗 La tua auto</h3>
+      <span class="badge ${used > tot ? 'err' : used === tot ? 'warn' : 'ok'}">${used}/${tot} posti occupati</span></div>
+    <p class="muted small" style="margin:6px 0 0">Indica chi viaggia con te: si aggiorna anche nella loro scheda.</p>
+    ${pas.map(x => `<div class="member"><span class="nm">${esc(x.name)}${x.plus_one ? ` <span class="muted small">+ ${esc(x.plus_one_name || '1')}</span>` : ''}</span>
+      <button class="btn sm ghost" onclick="removePassenger('${x.participant_id}')">✕</button></div>`).join('')}
+    ${others.map((o, i) => `<div class="member"><span class="nm">${esc(o)} <span class="muted small">(non in app)</span></span>
+      <button class="btn sm ghost" onclick="removeOther(${i})">✕</button></div>`).join('')}
+    ${used < tot ? `<label class="f">Aggiungi un invitato</label>
+      <div class="row"><select id="add-pas" class="grow" style="flex:1"><option value="">— scegli —</option>${cand}</select>
+      <button class="btn sm gold" onclick="addPassenger()">Aggiungi</button></div>
+      <label class="f">…o una persona che non usa l'app</label>
+      <div class="row"><input data-draft="add-other" id="add-other" class="grow" style="flex:1" placeholder="Nome e cognome">
+      <button class="btn sm" onclick="addOther()">Aggiungi</button></div>`
+      : `<p class="small" style="margin:10px 0 0">Auto piena. Per aggiungere qualcuno aumenta i posti da <a href="#" onclick="event.preventDefault();S.editIntol=true;S.det=null;render()">Auto, +1 e intolleranze</a>.</p>`}
+    <div class="row" style="margin-top:12px"><button class="btn sm ghost" onclick="S.editIntol=true;S.det=null;render()">✏️ Cambia posti o auto</button></div></div>`;
+}
+async function setPassengers(ids, others, okMsg) {
+  const { error } = await sb.rpc('set_passengers', { p_ids: ids, p_others: others });
+  if (error) return toast(errMsg(error), 'err');
+  toast(okMsg, 'ok'); await reload();
+}
+function myCarRow() { return S.me && S.carpool.find(c => c.participant_id === S.me.id && c.car === 'si'); }
+async function addPassenger() {
+  const mine = myCarRow(), id = $('#add-pas').value; if (!mine || !id) return toast('Scegli un invitato');
+  const c = S.carpool.find(x => x.participant_id === id), p = partById(id);
+  if (c && c.car === 'si' && !confirm(`${p.name} ha indicato di avere l'auto: aggiungendolo alla tua, la sua auto verrà tolta. Continuare?`)) return;
+  if (c && c.ride_with && c.ride_with !== mine.participant_id && !confirm(`${p.name} risulta in auto con ${partById(c.ride_with)?.name || '?'}. Spostarlo nella tua?`)) return;
+  const ids = S.carpool.filter(x => x.ride_with === mine.participant_id).map(x => x.participant_id).concat(id);
+  await setPassengers(ids, mine.car_others || [], `${p.name.split(' ')[0]} è in auto con te 🚗`);
+}
+async function removePassenger(id) {
+  const mine = myCarRow(); if (!mine) return;
+  if (!confirm(`Togliere ${partById(id)?.name} dalla tua auto?`)) return;
+  const ids = S.carpool.filter(x => x.ride_with === mine.participant_id && x.participant_id !== id).map(x => x.participant_id);
+  await setPassengers(ids, mine.car_others || [], 'Aggiornato');
+}
+async function addOther() {
+  const mine = myCarRow(), name = ($('#add-other').value || '').trim(); if (!mine || !name) return toast('Scrivi un nome');
+  clearDrafts('add-other');
+  const ids = S.carpool.filter(x => x.ride_with === mine.participant_id).map(x => x.participant_id);
+  await setPassengers(ids, [...(mine.car_others || []), name], 'Aggiunto');
+}
+async function removeOther(i) {
+  const mine = myCarRow(); if (!mine) return;
+  const ids = S.carpool.filter(x => x.ride_with === mine.participant_id).map(x => x.participant_id);
+  await setPassengers(ids, (mine.car_others || []).filter((_, k) => k !== i), 'Aggiornato');
+}
 function viewRides() {
   const cp = S.carpool;
   const drivers = cp.filter(c => c.car === 'si');
-  const byId = id => cp.find(c => c.participant_id === id) || partById(id);
   const looking = cp.filter(c => c.car === 'no' && !c.ride_with);
   const unknown = cp.filter(c => !c.car);
   const mine = S.me && cp.find(c => c.participant_id === S.me.id);
   const plus = c => c.plus_one ? ' <span class="muted small">+1</span>' : '';
+  const onBoard = cp.filter(c => c.car === 'si' || c.ride_with).reduce((n, c) => n + 1 + (c.plus_one ? 1 : 0), 0)
+    + drivers.reduce((n, c) => n + (c.car_others || []).length, 0);
+  const people = cp.reduce((n, c) => n + 1 + (c.plus_one ? 1 : 0), 0);
   return `<h2>🚗 Passaggi</h2>
-    ${mine ? `<div class="card"><div class="row"><div class="grow">${mine.car === 'si' ? `Hai l'auto · <b>${freeSeats(mine)}</b> posti liberi su ${mine.car_seats}`
-        : mine.car === 'no' ? (mine.ride_with ? `Vai con <b>${esc(byId(mine.ride_with)?.name || '?')}</b>` : 'Cerchi ancora un passaggio')
+    ${mine && mine.car === 'si' ? myCarEditor(mine) : mine ? `<div class="card"><div class="row"><div class="grow">${
+        mine.car === 'no' ? (mine.ride_with ? `Vai con <b>${esc(partById(mine.ride_with)?.name || '?')}</b>` : 'Cerchi ancora un passaggio')
         : 'Non hai ancora indicato come arrivi'}</div>
-      <button class="btn sm gold" onclick="S.editIntol=true;render()">✏️ Aggiorna</button></div></div>` : ''}
-    <div class="card"><h3>Auto disponibili (${drivers.length})</h3>
-      ${drivers.map(c => {
-        const pas = cp.filter(x => x.ride_with === c.participant_id);
-        const free = freeSeats(c);
-        return `<div class="member" style="align-items:flex-start"><div class="grow"><b>${esc(c.name)}</b>${plus(c)}
-          <div class="small muted">${pas.length ? 'Con: ' + pas.map(x => esc(x.name) + (x.plus_one ? ' +1' : '')).join(', ') : 'Nessun passeggero ancora'}</div></div>
-          <span class="badge ${free ? 'ok' : 'err'}">${free ? `${free} posti liberi` : 'piena'}</span></div>`;
-      }).join('') || '<div class="muted small">Nessuno ha ancora indicato un\'auto.</div>'}</div>
+      <button class="btn sm gold" onclick="S.editIntol=true;S.det=null;render()">✏️ Aggiorna</button></div></div>` : ''}
+    ${S.isAdmin ? `<div class="card small"><b>${onBoard}</b> persone già sistemate in ${drivers.length} auto su <b>${people}</b> (sì + forse, accompagnatori inclusi)</div>` : ''}
+    <h3 style="margin:16px 0 8px">Auto (${drivers.length})</h3>
+    ${drivers.map(c => {
+      const free = freeSeats(c), used = usedSeats(c), cap = 1 + (c.plus_one ? 1 : 0) + (c.car_seats || 0);
+      return `<div class="card"><div class="row"><b class="grow">🚗 Auto di ${esc(c.name)}</b>
+          <span class="badge ${used > (c.car_seats || 0) ? 'err' : free ? 'ok' : 'warn'}">${free ? (free === 1 ? '1 posto libero' : `${free} posti liberi`) : used > (c.car_seats || 0) ? 'troppi' : 'piena'}</span></div>
+        <div class="small muted" style="margin-top:2px">${cap - free}/${cap} a bordo</div>
+        <ol style="margin:8px 0 0;padding-left:20px">${carCrew(c).map(x => `<li style="padding:2px 0">${x}</li>`).join('')}</ol></div>`;
+    }).join('') || '<div class="card muted small">Nessuno ha ancora indicato un\'auto.</div>'}
     <div class="card"><h3>Cercano un passaggio (${looking.length})</h3>
       ${looking.map(c => `<div class="member"><span class="nm">${esc(c.name)}${plus(c)}</span></div>`).join('') || '<div class="muted small">Nessuno 👍</div>'}</div>
     ${unknown.length ? `<div class="card"><h3>Non hanno ancora indicato (${unknown.length})</h3><div class="small muted">${unknown.map(c => esc(c.name)).join(', ')}</div></div>` : ''}
-    <p class="muted small center">Per organizzarvi, scrivetevi direttamente. Poi indicate qui con chi andate.</p>`;
+    <p class="muted small center">Chi guida aggiunge i passeggeri qui sopra; chi non guida può indicare "vado con…" da ✏️ Aggiorna.</p>`;
 }
 
 /* ---------- app principale */
@@ -1008,7 +1079,8 @@ function adminGuests() {
     <p class="muted small">Chi risponde all'invito compare qui in automatico. Per formare le squadre vai su 👥 Squadre.</p>`;
 }
 function carText(g) {
-  if (g.car === 'si') return `🚗 ha l'auto · ${g.car_seats ?? 0} posti liberi`;
+  if (g.car === 'si') { const c = S.carpool.find(x => x.participant_id === g.participant_id);
+    return `🚗 ha l'auto · ${c ? usedSeats(c) : 0}/${g.car_seats ?? 0} posti occupati${(g.car_others || []).length ? ' · con ' + esc(g.car_others.join(', ')) : ''}`; }
   if (g.car === 'no') return g.ride_with ? `🙋 va con ${esc(partById(g.ride_with)?.name || '?')}` : '🙋 cerca un passaggio';
   return '';
 }
