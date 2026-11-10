@@ -135,6 +135,16 @@ td.n,th.n{text-align:right}
 .inv-details{position:relative;z-index:2;margin:16px auto 0;max-width:440px;background:rgba(8,20,36,.55);border:1px solid rgba(255,255,255,.18);
   border-radius:14px;padding:12px 14px;color:#eaf2fc;white-space:pre-wrap;font-size:.95rem;backdrop-filter:blur(4px)}
 .invite.compact{padding:20px 16px 150px}
+.invite.has-video{background:#0b1a2e;padding:26px 20px 22px;display:flex;flex-direction:column;align-items:center;min-height:min(84vh,760px)}
+.invite.has-video.compact{min-height:0;padding:18px 16px 20px}
+.inv-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
+.inv-shade{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(6,16,30,.78) 0%,rgba(6,16,30,.25) 42%,rgba(6,16,30,.2) 58%,rgba(6,16,30,.85) 100%)}
+.invite.compact .inv-shade{background:rgba(6,16,30,.6)}
+.inv-spacer{flex:1;min-height:110px}
+.inv-btn{position:absolute;z-index:3;border:1px solid rgba(255,255,255,.35);background:rgba(6,16,30,.55);color:#fff;border-radius:999px;cursor:pointer;backdrop-filter:blur(4px)}
+.inv-sound{top:12px;right:12px;width:40px;height:40px;font-size:1.1rem}
+.inv-play{top:50%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;font-size:1.8rem}
+.inv-play[hidden]{display:none}
 .invite.compact .inv-num{font-size:84px}
 .invite.compact .inv-name{font-size:2rem;margin-bottom:10px}
 .invite.compact .rackets{width:200px;top:16px}
@@ -175,6 +185,10 @@ td.n,th.n{text-align:right}
 const SUPABASE_URL = 'https://ehicqjufsgekyafoiybe.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_f7BSP_kndrewJG79MkTUDQ_D1tCVpLs';
 
+// Video di sfondo dell'invito: file caricati su GitHub accanto a index.html ('' per tornare alla grafica disegnata)
+const INVITE_VIDEO = 'invito.mp4';
+const INVITE_POSTER = 'invito.jpg';
+
 const BUCKET = 'prove';
 const NEWS_BUCKET = 'notizie';
 const MAX_BYTES = 50 * 1024 * 1024;      // limite piano gratuito Supabase
@@ -192,7 +206,7 @@ const S = {
   settings: { title: 'Fanta-Compleanno', invite_name: 'Vincenzo', invite_age: 30, invite_date: '2026-12-12', invite_details: '' },
   teams: [], participants: [], objectives: [], submissions: [], adjustments: [], news: [], guests: [],
   devices: [], deviceCounts: {}, tab: 'notizie', adminTab: 'invitati',
-  editRsvp: false, editIntol: false, det: null, guestFilter: '', carpool: [],
+  editRsvp: false, editIntol: false, det: null, invSound: false, guestFilter: '', carpool: [],
   drafts: {}, urlCache: {}, proofFilter: '', editingObj: null, editingNews: null, newsFile: null, newsRemoveFile: false,
   pendingRender: false, busy: false, fatal: null
 };
@@ -374,6 +388,7 @@ function render(force = true) {
   app.innerHTML = st === 'invite' ? viewInvite() : st === 'declined' ? viewDeclined() : st === 'intol' ? viewIntol() : viewMain();
   restoreDrafts();
   hydrateThumbs();
+  hookInviteVideo();
 }
 
 function viewFatal() {
@@ -446,23 +461,50 @@ function inviteHtml(compact = false) {
   date = date.charAt(0).toUpperCase() + date.slice(1);
   const cd = countdownText();
   const details = (st.invite_details || '').trim();
-  return `<section class="invite ${compact ? 'compact' : ''}">
-    <div class="rackets">${RACKETS_SVG}</div>${COURT_SVG}<div class="snow">${compact ? SNOW_SMALL : SNOW_BIG}</div>
+  const vid = !!INVITE_VIDEO;
+  const bg = !vid ? `<div class="rackets">${RACKETS_SVG}</div>${COURT_SVG}`
+    : compact ? `<img class="inv-bg" src="${esc(INVITE_POSTER)}" alt=""><div class="inv-shade"></div>`
+    : `<video class="inv-bg" src="${esc(INVITE_VIDEO)}" poster="${esc(INVITE_POSTER)}" autoplay muted loop playsinline preload="auto"></video><div class="inv-shade"></div>
+       <button class="inv-btn inv-sound" type="button" onclick="toggleInvSound()" aria-label="Audio">${S.invSound ? '🔊' : '🔇'}</button>
+       <button class="inv-btn inv-play" type="button" onclick="playInv()" hidden aria-label="Riproduci">▶︎</button>`;
+  return `<section class="invite ${compact ? 'compact' : ''} ${vid ? 'has-video' : ''}">
+    ${bg}<div class="snow">${compact ? SNOW_SMALL : SNOW_BIG}</div>
     <div class="inv-kicker">Sei invitato al</div>
     <div class="inv-num">${num}</div>
     <div class="inv-of">compleanno di</div>
     <div class="inv-name">${esc(st.invite_name || 'Vincenzo')}</div>
+    ${vid && !compact ? '<div class="inv-spacer"></div>' : ''}
     <div class="inv-date">🎾 ${esc(date)}</div>
     ${cd ? `<div class="inv-count">${cd}</div>` : ''}
     ${!compact ? `<div class="inv-details">${details ? linkify(details) : 'Tutti i dettagli arriveranno presto… ⛄'}</div>` : ''}
   </section>`;
+}
+function hookInviteVideo() {
+  const v = document.querySelector('video.inv-bg'); if (!v) return;
+  v.muted = !S.invSound;
+  const p = v.play();
+  if (p && p.catch) p.catch(() => { const b = document.querySelector('.inv-play'); if (b) b.hidden = false; });
+}
+function toggleInvSound() {
+  S.invSound = !S.invSound;
+  const v = document.querySelector('video.inv-bg'), b = document.querySelector('.inv-sound');
+  if (v) { v.muted = !S.invSound; if (S.invSound) v.play().catch(() => { }); }
+  if (b) b.textContent = S.invSound ? '🔊' : '🔇';
+}
+function playInv() {
+  const v = document.querySelector('video.inv-bg'); if (!v) return;
+  v.play().then(() => { const b = document.querySelector('.inv-play'); if (b) b.hidden = true; }).catch(() => { });
+}
+function pickRsvp(k, btn) {   // senza ridisegnare la pagina, così il video non riparte
+  S.drafts.rsvp = k;
+  btn.parentNode.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === btn));
 }
 
 /* ---------- 1. invito + risposta */
 function viewInvite() {
   const editing = !!S.me;
   const cur = draft('rsvp', S.myGuest && S.myGuest.rsvp || '');
-  const opts = ['si', 'forse', 'no'].map(k => `<button type="button" class="${k} ${cur === k ? 'on' : ''}" onclick="S.drafts.rsvp='${k}';render()"><span class="e">${RSVP[k][0]}</span>${RSVP[k][1]}</button>`).join('');
+  const opts = ['si', 'forse', 'no'].map(k => `<button type="button" class="${k} ${cur === k ? 'on' : ''}" onclick="pickRsvp('${k}',this)"><span class="e">${RSVP[k][0]}</span>${RSVP[k][1]}</button>`).join('');
   return `<div class="wrap" style="padding-top:calc(16px + env(safe-area-inset-top))">
     ${inviteHtml(false)}
     <div class="card"><h2>Rispondi all'invito</h2>
