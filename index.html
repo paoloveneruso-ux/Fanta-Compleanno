@@ -157,6 +157,10 @@ td.n,th.n{text-align:right}
 .invite.compact .inv-name{font-size:2rem;margin-bottom:10px}
 .invite.compact .rackets{width:200px;top:16px}
 
+.invite-photo{margin:0 0 16px;border-radius:22px;overflow:hidden;border:1px solid var(--line);background:#081424;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.invite-photo img{display:block;width:100%;height:auto}
+.invite-photo.compact img{max-height:340px;object-fit:cover;object-position:50% 50%}
+
 /* ------------------------------------------------ RSVP / INTOLLERANZE */
 .rsvp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
 .rsvp button{appearance:none;border:2px solid var(--line);background:#0d1c30;color:var(--text);border-radius:14px;padding:12px 4px;
@@ -461,6 +465,8 @@ function countdownText() {
   return '';
 }
 function inviteHtml(compact = false) {
+  // invito come sola immagine, senza niente sopra (verrà sostituita dall'invito definitivo)
+  if (INVITE_IMAGE) return `<section class="invite-photo ${compact ? 'compact' : ''}"><img src="${esc(INVITE_IMAGE)}" alt="Invito alla festa di compleanno di ${esc(S.settings.invite_name || 'Vincenzo')}"></section>`;
   const st = S.settings, age = String(st.invite_age ?? 30);
   const num = age.endsWith('0') && age.length > 1 ? `${esc(age.slice(0, -1))}${BALL_SVG}` : `${esc(age)}${BALL_SVG}`;
   let date = partyDate().toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
