@@ -543,9 +543,10 @@ function playInv() {
   v.play().then(() => { const b = document.querySelector('.inv-play'); if (b) b.hidden = true; }).catch(() => { });
 }
 const ENV_KEY = 'fanta-busta-aperta';
-function maybeShowEnvelope() {
-  if (document.getElementById('envelope') || lsGet(ENV_KEY)) return;
-  if (stage() !== 'invite' || S.me) return;          // solo al primo accesso di un nuovo invitato
+let envShown = false;
+function maybeShowEnvelope() {            // a ogni apertura del link (una volta per caricamento della pagina)
+  if (envShown || document.getElementById('envelope')) return;
+  envShown = true;
   showEnvelope();
 }
 function showEnvelope() {
