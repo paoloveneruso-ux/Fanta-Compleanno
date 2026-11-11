@@ -149,51 +149,13 @@ td.n,th.n{text-align:right}
 .invite.compact{padding:20px 16px 150px}
 .invite.has-video{background:#0b1a2e;padding:26px 20px 22px;display:flex;flex-direction:column;align-items:center;min-height:min(84vh,760px)}
 .invite.has-video.compact{min-height:0;padding:18px 16px 20px}
-.inv-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
+.inv-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 55%;z-index:-2}
 .inv-shade{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(6,16,30,.78) 0%,rgba(6,16,30,.25) 42%,rgba(6,16,30,.2) 58%,rgba(6,16,30,.85) 100%)}
 .invite.compact .inv-shade{background:rgba(6,16,30,.6)}
 .inv-spacer{flex:1;min-height:110px}
-.inv-btn{position:absolute;z-index:3;border:1px solid rgba(255,255,255,.35);background:rgba(6,16,30,.55);color:#fff;border-radius:999px;cursor:pointer;backdrop-filter:blur(4px)}
-.inv-sound{top:12px;right:12px;width:40px;height:40px;font-size:1.1rem}
-.inv-play{top:50%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;font-size:1.8rem}
-.inv-play[hidden]{display:none}
 .invite.compact .inv-num{font-size:84px}
 .invite.compact .inv-name{font-size:2rem;margin-bottom:10px}
 .invite.compact .rackets{width:200px;top:16px}
-
-/* ------------------------------------------------ BUSTA (prima apertura) */
-.env-wrap{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;
-  background:radial-gradient(120% 80% at 50% 10%,#24508a 0%,#10294a 50%,#081424 100%);cursor:pointer;
-  transition:opacity .7s ease,transform .7s ease;-webkit-user-select:none;user-select:none;padding:20px}
-.env-wrap.gone{opacity:0;transform:scale(1.06);pointer-events:none}
-.env-head{position:relative;z-index:2;color:#cfe0f5;font-size:.8rem;letter-spacing:.3em;text-transform:uppercase;font-weight:700;text-align:center}
-.env{position:relative;z-index:2;width:min(84vw,340px);aspect-ratio:3/2;perspective:1200px;filter:drop-shadow(0 22px 40px rgba(0,0,0,.5));
-  animation:envFloat 3.2s ease-in-out infinite}
-@keyframes envFloat{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-8px) rotate(1deg)}}
-.env-back{position:absolute;inset:0;background:#e3dccd;border-radius:12px}
-.env-letter{position:absolute;left:6%;right:6%;top:7%;height:88%;z-index:1;background:#fffdf7;border-radius:8px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;color:#0a1626;
-  transition:transform 1s cubic-bezier(.2,.8,.2,1) .5s;box-shadow:0 2px 10px rgba(0,0,0,.12)}
-.env-letter .lk{font-size:.62rem;letter-spacing:.25em;text-transform:uppercase;font-weight:700;color:#2f6fc0}
-.env-letter .ln{font-family:Anton,Impact,sans-serif;font-size:3.4rem;line-height:1;margin:2px 0}
-.env-letter .lname{font-family:"Playfair Display",Georgia,serif;font-style:italic;font-weight:700;font-size:1.6rem;color:#7a9a00}
-.env-front{position:absolute;inset:0;z-index:2;border-radius:12px;background:linear-gradient(160deg,#f7f2e7,#ebe3d2);
-  clip-path:polygon(0 0,50% 56%,100% 0,100% 100%,0 100%)}
-.env-flap{position:absolute;left:0;right:0;top:0;height:60%;z-index:3;background:linear-gradient(180deg,#efe7d6,#e2d8c3);
-  clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top center;transition:transform .7s ease .15s,z-index 0s .5s;border-radius:12px 12px 0 0}
-.env-seal{position:absolute;left:50%;top:60%;width:70px;height:70px;z-index:4;transform:translate(-50%,-50%);transition:transform .4s ease,opacity .4s ease}
-.env-seal svg{width:100%;height:100%;filter:drop-shadow(0 4px 6px rgba(0,0,0,.35))}
-.env-to{position:relative;z-index:2;text-align:center;color:#fff;font-size:1.05rem}
-.env-to b{display:block;font-family:"Playfair Display",Georgia,serif;font-style:italic;font-size:2rem;color:var(--ball);margin-top:2px}
-.env-tap{position:relative;z-index:2;color:#fff;font-weight:700;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);
-  padding:10px 20px;border-radius:999px;animation:envPulse 1.6s ease-in-out infinite}
-@keyframes envPulse{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.06);opacity:1}}
-.env-wrap.open .env{animation:none}
-.env-wrap.open .env-seal{transform:translate(-50%,-50%) scale(1.5);opacity:0}
-.env-wrap.open .env-flap{transform:rotateX(180deg);z-index:0}
-.env-wrap.open .env-letter{transform:translateY(-58%)}
-.env-wrap.open .env-tap{opacity:0;animation:none}
-@media (prefers-reduced-motion:reduce){.env,.env-tap{animation:none}.env-letter,.env-flap,.env-seal{transition:none}}
 
 /* ------------------------------------------------ RSVP / INTOLLERANZE */
 .rsvp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
@@ -231,9 +193,8 @@ td.n,th.n{text-align:right}
 const SUPABASE_URL = 'https://ehicqjufsgekyafoiybe.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_f7BSP_kndrewJG79MkTUDQ_D1tCVpLs';
 
-// Video di sfondo dell'invito: file caricati su GitHub accanto a index.html ('' per tornare alla grafica disegnata)
-const INVITE_VIDEO = 'invito.mp4';
-const INVITE_POSTER = 'invito.jpg';
+// Foto di sfondo dell'invito: file caricato su GitHub accanto a index.html ('' per tornare alla grafica disegnata)
+const INVITE_IMAGE = 'invito.jpg';
 
 const BUCKET = 'prove';
 const NEWS_BUCKET = 'notizie';
@@ -252,7 +213,7 @@ const S = {
   settings: { title: 'Fanta-Compleanno', invite_name: 'Vincenzo', invite_age: 30, invite_date: '2026-12-12', invite_details: '' },
   teams: [], participants: [], objectives: [], submissions: [], adjustments: [], news: [], guests: [],
   devices: [], deviceCounts: {}, tab: 'notizie', adminTab: 'invitati',
-  editRsvp: false, editIntol: false, det: null, invSound: false, guestFilter: '', carpool: [],
+  editRsvp: false, editIntol: false, det: null, guestFilter: '', carpool: [],
   drafts: {}, urlCache: {}, proofFilter: '', editingObj: null, editingNews: null, newsFile: null, newsRemoveFile: false,
   pendingRender: false, busy: false, fatal: null
 };
@@ -434,8 +395,6 @@ function render(force = true) {
   app.innerHTML = st === 'invite' ? viewInvite() : st === 'declined' ? viewDeclined() : st === 'intol' ? viewIntol() : viewMain();
   restoreDrafts();
   hydrateThumbs();
-  hookInviteVideo();
-  maybeShowEnvelope();
 }
 
 function viewFatal() {
@@ -508,12 +467,9 @@ function inviteHtml(compact = false) {
   date = date.charAt(0).toUpperCase() + date.slice(1);
   const cd = countdownText();
   const details = (st.invite_details || '').trim();
-  const vid = !!INVITE_VIDEO;
+  const vid = !!INVITE_IMAGE;
   const bg = !vid ? `<div class="rackets">${RACKETS_SVG}</div>${COURT_SVG}`
-    : compact ? `<img class="inv-bg" src="${esc(INVITE_POSTER)}" alt=""><div class="inv-shade"></div>`
-    : `<video class="inv-bg" src="${esc(INVITE_VIDEO)}" poster="${esc(INVITE_POSTER)}" autoplay muted loop playsinline preload="auto"></video><div class="inv-shade"></div>
-       <button class="inv-btn inv-sound" type="button" onclick="toggleInvSound()" aria-label="Audio">${S.invSound ? '🔊' : '🔇'}</button>
-       <button class="inv-btn inv-play" type="button" onclick="playInv()" hidden aria-label="Riproduci">▶︎</button>`;
+    : `<img class="inv-bg" src="${esc(INVITE_IMAGE)}" alt=""><div class="inv-shade"></div>`;
   return `<section class="invite ${compact ? 'compact' : ''} ${vid ? 'has-video' : ''}">
     ${bg}<div class="snow">${compact ? SNOW_SMALL : SNOW_BIG}</div>
     <div class="inv-kicker">Sei invitato al</div>
@@ -526,60 +482,7 @@ function inviteHtml(compact = false) {
     ${!compact ? `<div class="inv-details">${details ? linkify(details) : 'Tutti i dettagli arriveranno presto… ⛄'}</div>` : ''}
   </section>`;
 }
-function hookInviteVideo() {
-  const v = document.querySelector('video.inv-bg'); if (!v) return;
-  v.muted = !S.invSound;
-  const p = v.play();
-  if (p && p.catch) p.catch(() => { const b = document.querySelector('.inv-play'); if (b) b.hidden = false; });
-}
-function toggleInvSound() {
-  S.invSound = !S.invSound;
-  const v = document.querySelector('video.inv-bg'), b = document.querySelector('.inv-sound');
-  if (v) { v.muted = !S.invSound; if (S.invSound) v.play().catch(() => { }); }
-  if (b) b.textContent = S.invSound ? '🔊' : '🔇';
-}
-function playInv() {
-  const v = document.querySelector('video.inv-bg'); if (!v) return;
-  v.play().then(() => { const b = document.querySelector('.inv-play'); if (b) b.hidden = true; }).catch(() => { });
-}
-const ENV_KEY = 'fanta-busta-aperta';
-let envShown = false;
-function maybeShowEnvelope() {            // a ogni apertura del link (una volta per caricamento della pagina)
-  if (envShown || document.getElementById('envelope')) return;
-  envShown = true;
-  showEnvelope();
-}
-function showEnvelope() {
-  if (document.getElementById('envelope')) return;
-  const st = S.settings, age = String(st.invite_age ?? 30), name = esc(st.invite_name || 'Vincenzo');
-  const d = document.createElement('div');
-  d.id = 'envelope'; d.className = 'env-wrap';
-  d.innerHTML = `<div class="snow">${SNOW_BIG}</div>
-    <div class="env-head">Hai ricevuto un invito</div>
-    <div class="env"><div class="env-back"></div>
-      <div class="env-letter"><div class="lk">Sei invitato al</div><div class="ln">${esc(age)}</div><div class="lname">${name}</div></div>
-      <div class="env-front"></div><div class="env-flap"></div><div class="env-seal">${BALL_SVG}</div></div>
-    <div class="env-to">Festa di compleanno di<b>${name}</b></div>
-    <div class="env-tap">Tocca per aprire ✉️</div>`;
-  d.addEventListener('click', openEnvelope, { once: true });
-  document.body.appendChild(d);
-}
-function openEnvelope() {
-  const d = document.getElementById('envelope'); if (!d) return;
-  lsSet(ENV_KEY, '1');
-  d.classList.add('open');
-  // il tocco è un gesto dell'utente: si può far partire il video con l'audio
-  const v = document.querySelector('video.inv-bg');
-  if (v) {
-    S.invSound = true; v.muted = false;
-    v.play().catch(() => { S.invSound = false; v.muted = true; v.play().catch(() => { }); })
-      .finally(() => { const b = document.querySelector('.inv-sound'); if (b) b.textContent = S.invSound ? '🔊' : '🔇'; });
-  }
-  setTimeout(() => d.classList.add('gone'), 1900);
-  setTimeout(() => d.remove(), 2700);
-}
-
-function pickRsvp(k, btn) {   // senza ridisegnare la pagina, così il video non riparte
+function pickRsvp(k, btn) {   // senza ridisegnare la pagina
   S.drafts.rsvp = k;
   btn.parentNode.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === btn));
 }
@@ -1491,8 +1394,7 @@ function adminSettings() {
       <label class="f">Data della festa</label><input data-draft="s-idate" id="s-idate" type="date" value="${esc(st.invite_date || '')}">
       <label class="f">Dettagli (luogo, orario, dress code…)</label><textarea data-draft="s-idet" id="s-idet" placeholder="Es. Ore 20:30 · Circolo …">${esc(st.invite_details || '')}</textarea>
       <button class="btn primary block" style="margin-top:10px" onclick="saveInvite()">Salva invito</button>
-      <button class="btn ghost block" style="margin-top:8px" onclick="previewInvite()">👁 Anteprima</button>
-      <button class="btn ghost block" style="margin-top:8px" onclick="showEnvelope()">✉️ Rivedi l'apertura della busta</button></div>
+      <button class="btn ghost block" style="margin-top:8px" onclick="previewInvite()">👁 Anteprima</button></div>
     <div class="card"><h3>Nome dell'app</h3><div class="row">
       <input class="grow" style="flex:1" data-draft="s-title" id="s-title" value="${esc(st.title)}">
       <button class="btn" onclick="saveTitle()">Salva</button></div></div>
