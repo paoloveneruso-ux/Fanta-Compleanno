@@ -111,6 +111,7 @@ td.n,th.n{text-align:right}
   z-index:50;background:var(--card2);border:1px solid var(--line);padding:10px 16px;border-radius:12px;transition:transform .25s;max-width:92vw;font-weight:600}
 #toast.show{transform:translateX(-50%) translateY(0)}
 #toast.ok{border-color:var(--ok)} #toast.err{border-color:var(--err)}
+#toast:not(.show){visibility:hidden}
 #modal{position:fixed;inset:0;z-index:40;background:rgba(40,24,18,.78);display:none;align-items:center;justify-content:center;padding:16px}
 #modal.show{display:flex}
 #modal .box{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;width:100%;max-width:520px;max-height:90vh;overflow:auto}
@@ -256,6 +257,16 @@ nav.tabs button.on::after{content:"";position:absolute;left:32%;right:32%;bottom
 .inv-hero-bg{position:absolute;inset:-40px;background-size:cover;background-position:center;filter:blur(28px) brightness(.45);transform:scale(1.08)}
 .inv-hero img{position:relative;object-fit:contain}
 .scroll-cue{background:rgba(42,28,22,.62);border:1px solid rgba(255,255,255,.38);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;font-weight:500;padding:13px 30px 7px}
+
+/* invito a tutto schermo: sfondo che riempie lo schermo + scritte dell'invito sopra, mai tagliate */
+.inv-full{background:#1f150f url('invito-sfondo.jpg') 78% 50%/cover no-repeat}
+.inv-stage{position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);width:min(100%,62vh);width:min(100%,62svh)}
+.inv-hero .inv-stage img.t{position:absolute;left:50%;transform:translateX(-50%);height:auto;max-width:none;object-fit:fill;display:block}
+.inv-hero .inv-stage img.t-title{top:27%;width:76.5%}
+.inv-hero .inv-stage img.t-date{top:36.5%;width:21.8%}
+.inv-hero .inv-stage img.t-place{top:67%;width:38.4%}
+.inv-hero .inv-stage img.t-conf{top:74.5%;width:30.9%}
+.inv-hero .inv-stage img.t-sign{top:80.5%;width:40.4%}
 </style>
 </head>
 <body>
@@ -576,7 +587,14 @@ function viewInvite() {
   const cur = draft('rsvp', S.myGuest && S.myGuest.rsvp || '');
   const opts = ['si', 'forse', 'no'].map(k => `<button type="button" class="${k} ${cur === k ? 'on' : ''}" onclick="pickRsvp('${k}',this)">${RSVP[k][1]}</button>`).join('');
   const top = INVITE_IMAGE
-    ? `<section class="inv-hero"><div class="inv-hero-bg" style="background-image:url('${esc(INVITE_IMAGE)}')"></div><img src="${esc(INVITE_IMAGE)}" alt="Invito alla festa di compleanno di ${esc(S.settings.invite_name || 'Vincenzo')}">
+    ? `<section class="inv-hero inv-full" aria-label="Invito alla festa di compleanno di ${esc(S.settings.invite_name || 'Vincenzo')}">
+        <div class="inv-stage">
+          <img class="t t-title" src="chapter30.png" alt="Chapter 30">
+          <img class="t t-date" src="data.png" alt="12.12.2026, ore 12:30">
+          <img class="t t-place" src="luogo.png" alt="Chalet Valentino, Roccaraso">
+          <img class="t t-conf" src="gradita-conferma.png" alt="È gradita conferma">
+          <img class="t t-sign" src="firma.png" alt="Vincenzo Della Pietra">
+        </div>
         <button class="scroll-cue" type="button" onclick="document.getElementById('rsvp-start').scrollIntoView({behavior:'smooth'})">Scorri per l'invito<span class="chev"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></button></section>
        <div class="wrap" id="rsvp-start" style="padding-top:18px">`
     : `<div class="wrap" id="rsvp-start" style="padding-top:calc(16px + env(safe-area-inset-top))">${inviteHtml(false)}`;
