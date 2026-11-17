@@ -7,12 +7,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Festa di compleanno di Vincenzo 🎾</title>
+<title>Festa di compleanno di Vincenzo</title>
 <!-- Anteprima del link (WhatsApp, Telegram, iMessage…). og:image e og:url devono essere indirizzi COMPLETI:
      sostituisci INDIRIZZO-DEL-SITO con il tuo link GitHub Pages, es. https://mario.github.io/festa-compleanno-vincenzo -->
 <meta name="description" content="Sei invitato al 30° compleanno di Vincenzo – sabato 12 dicembre 2026. Apri l'invito e rispondi!">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Festa di compleanno di Vincenzo 🎾">
+<meta property="og:title" content="Festa di compleanno di Vincenzo">
 <meta property="og:description" content="Sei invitato al 30° compleanno di Vincenzo – sabato 12 dicembre 2026. Apri l'invito e rispondi!">
 <meta property="og:url" content="https://paoloveneruso-ux.github.io/Fanta-Compleanno/">
 <meta property="og:image" content="https://paoloveneruso-ux.github.io/Fanta-Compleanno/anteprima.jpg">
@@ -22,7 +22,7 @@
 <meta name="apple-mobile-web-app-title" content="Festa Vincenzo">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
@@ -160,7 +160,7 @@ td.n,th.n{text-align:right}
 
 .invite-photo{margin:0 0 16px;border-radius:22px;overflow:hidden;border:1px solid var(--line);background:var(--dark);box-shadow:0 20px 60px rgba(0,0,0,.45)}
 .invite-photo img{display:block;width:100%;height:auto}
-.invite-photo.compact img{max-height:340px;object-fit:cover;object-position:50% 50%}
+.invite-photo.compact img{max-height:none}
 
 /* ------------------------------------------------ INVITO A TUTTO SCHERMO */
 .inv-hero{position:relative;height:100vh;height:100svh;overflow:hidden;background:var(--dark)}
@@ -199,6 +199,63 @@ td.n,th.n{text-align:right}
 .news .body{white-space:pre-wrap;margin-top:6px;overflow-wrap:anywhere}
 .news img.att{display:block;width:100%;max-height:420px;object-fit:contain;background:var(--dark);border-radius:12px;margin-top:10px;cursor:pointer;border:1px solid var(--line)}
 .news.pinned{border-color:var(--ball)}
+
+/* ================================================= STILE ELEGANTE (sovrascrive le regole sopra) */
+:root{--serif:"DM Serif Display",Georgia,"Times New Roman",serif;--sans:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --cream:#f6e9cf;--hair:rgba(255,255,255,.16);--hair2:rgba(255,255,255,.32);--ok:#bfe9d9;--warn:#f7dca0;--err:#ffc2ca}
+html,body{font-family:var(--sans);font-size:15.5px;letter-spacing:.005em}
+h1,h2,h3{font-family:var(--serif);font-weight:400;letter-spacing:.01em}
+h2{font-size:1.5rem} h3{font-size:1.2rem}
+a{color:var(--cream)}
+header.top{padding:calc(14px + env(safe-area-inset-top)) 0 12px}
+.logo img{display:block;height:22px;width:auto}
+.chip{background:transparent;border:1px solid var(--hair2);font-size:.8rem;gap:6px;padding:7px 12px}
+.card{background:rgba(255,255,255,.055);border:1px solid var(--hair);border-radius:14px;padding:18px}
+.btn{border-radius:999px;border:1px solid var(--hair2);background:transparent;font-weight:500;letter-spacing:.08em;text-transform:uppercase;font-size:.76rem;padding:12px 18px}
+.btn.sm{font-size:.68rem;padding:8px 13px;border-radius:999px}
+.btn.primary,.btn.gold{background:var(--cream);color:var(--dark);border:1px solid var(--cream)}
+.btn.danger{border-color:var(--err);color:var(--err)}
+.btn.ghost{border-color:transparent;opacity:.9}
+input,textarea,select{background:rgba(0,0,0,.14);border:1px solid rgba(255,255,255,.24);border-radius:10px;font-family:var(--sans)}
+input:focus,textarea:focus,select:focus{border-color:var(--cream)}
+label.f{text-transform:uppercase;letter-spacing:.14em;font-size:.66rem;color:var(--muted);margin:14px 0 6px}
+.muted{color:var(--muted)}
+.pts{color:var(--cream);font-weight:600}
+.badge{background:transparent;border:1px solid currentColor;font-weight:500;letter-spacing:.04em;color:var(--muted)}
+.badge.ok{background:transparent;color:var(--ok);border-color:var(--ok)}
+.badge.warn{background:transparent;color:var(--warn);border-color:var(--warn)}
+.badge.err{background:transparent;color:var(--err);border-color:var(--err)}
+.rsvp{gap:10px;margin-top:16px}
+.rsvp button,.rsvp:not(.two) button{background:transparent;border:1px solid var(--hair2);border-radius:12px;font-weight:500;letter-spacing:.06em;
+  text-transform:uppercase;font-size:.72rem;padding:16px 4px;color:var(--text)}
+.rsvp button.on,.rsvp button.on.si,.rsvp button.on.forse,.rsvp button.on.no{background:var(--cream);border-color:var(--cream);color:var(--dark)}
+.tags button{background:transparent;border:1px solid var(--hair2);font-size:.85rem}
+.tags button.on{background:var(--cream);border-color:var(--cream);color:var(--dark);font-weight:500}
+nav.tabs{background:rgba(78,52,42,.97);border-top:1px solid var(--hair);padding:4px 8px calc(4px + env(safe-area-inset-bottom))}
+nav.tabs button{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;font-weight:500;padding:16px 4px;color:rgba(255,255,255,.62);border-radius:0}
+nav.tabs button.on{background:none;color:#fff}
+nav.tabs button.on::after{content:"";position:absolute;left:32%;right:32%;bottom:8px;height:1.5px;background:var(--cream)}
+.subtabs button{background:transparent;border:1px solid var(--hair2);color:var(--muted);font-weight:500;letter-spacing:.06em;font-size:.78rem}
+.subtabs button.on{background:var(--cream);border-color:var(--cream);color:var(--dark)}
+.stats div{background:rgba(255,255,255,.055);border:1px solid var(--hair)}
+.stats b{font-family:var(--serif);font-weight:400;font-size:1.9rem}
+.stats span{text-transform:uppercase;letter-spacing:.1em;font-size:.62rem}
+.list li,.member{border-top:1px solid rgba(255,255,255,.12)}
+.hero{background:rgba(255,255,255,.055);border:1px solid var(--hair)}
+.hero .big{font-family:var(--serif);font-weight:400;color:var(--cream)}
+#toast{background:#4e342a;border-color:var(--hair2);font-weight:500}
+#modal .box{background:#694a3d;border-color:var(--hair2)}
+.thumb.ph{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.lettering{margin:2px 0 6px;text-align:center}
+.lettering img{display:inline-block;width:min(230px,72%);height:auto}
+.kv{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:11px 0;border-top:1px solid rgba(255,255,255,.12)}
+.kv span{color:var(--muted);text-transform:uppercase;letter-spacing:.13em;font-size:.64rem;white-space:nowrap}
+.kv b{font-weight:500;text-align:right}
+.invite-photo{border-radius:14px;border:1px solid var(--hair);box-shadow:0 14px 40px rgba(0,0,0,.3)}
+.inv-hero{background:#2a1c16}
+.inv-hero-bg{position:absolute;inset:-40px;background-size:cover;background-position:center;filter:blur(28px) brightness(.45);transform:scale(1.08)}
+.inv-hero img{position:relative;object-fit:contain}
+.scroll-cue{background:rgba(42,28,22,.62);border:1px solid rgba(255,255,255,.38);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;font-weight:500;padding:13px 30px 7px}
 </style>
 </head>
 <body>
@@ -232,7 +289,7 @@ const S = {
   uid: null, me: null, myGuest: null, isAdmin: false,
   settings: { title: 'Fanta-Compleanno', invite_name: 'Vincenzo', invite_age: 30, invite_date: '2026-12-12', invite_details: '' },
   teams: [], participants: [], objectives: [], submissions: [], adjustments: [], news: [], guests: [],
-  devices: [], deviceCounts: {}, tab: 'notizie', adminTab: 'invitati',
+  devices: [], deviceCounts: {}, tab: 'invito', adminTab: 'invitati',
   editRsvp: false, editIntol: false, det: null, guestFilter: '', carpool: [],
   drafts: {}, urlCache: {}, proofFilter: '', editingObj: null, editingNews: null, newsFile: null, newsRemoveFile: false,
   pendingRender: false, busy: false, fatal: null
@@ -255,8 +312,8 @@ const errMsg = e => (e && (e.message || e.error_description || e.error)) || Stri
 const slug = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'x';
 const normName = s => String(s || '').trim().replace(/\s+/g, ' ').toLowerCase();
 const linkify = s => esc(s).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
-const RSVP = { si: ['✅', 'Ci sarò', 'ok'], forse: ['🤔', 'Forse', 'warn'], no: ['❌', 'Non ci sarò', 'err'] };
-const rsvpBadge = r => r && RSVP[r] ? `<span class="badge ${RSVP[r][2]}">${RSVP[r][0]} ${RSVP[r][1]}</span>` : `<span class="badge hid">⏳ nessuna risposta</span>`;
+const RSVP = { si: ['', 'Ci sarò', 'ok'], forse: ['', 'Forse', 'warn'], no: ['', 'Non ci sarò', 'err'] };
+const rsvpBadge = r => r && RSVP[r] ? `<span class="badge ${RSVP[r][2]}">${RSVP[r][1]}</span>` : `<span class="badge hid">nessuna risposta</span>`;
 function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
 function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { } }
 
@@ -357,8 +414,8 @@ async function loadAll() {
     const { data } = await sb.from('participant_devices').select('*').order('created_at');
     S.devices = data || [];
   }
-  if (!S.isAdmin && S.tab === 'admin') S.tab = 'notizie';
-  document.title = `Festa di compleanno di ${S.settings.invite_name || 'Vincenzo'} 🎾`;
+  if (!S.isAdmin && S.tab === 'admin') S.tab = 'invito';
+  document.title = `Festa di compleanno di ${S.settings.invite_name || 'Vincenzo'}`;
 }
 
 async function reload() {
@@ -390,7 +447,7 @@ function standings() {
   rows.forEach((r, i) => r.pos = i > 0 && r.pts === rows[i - 1].pts ? rows[i - 1].pos : i + 1);
   return rows;
 }
-const medal = p => p === 1 ? '🥇' : p === 2 ? '🥈' : p === 3 ? '🥉' : p;
+const medal = p =>p + '°';
 const objsForTeam = tid => S.objectives.filter(o => o.active && (!o.team_id || o.team_id === tid));
 
 /* ---------------------------------------------------------- flusso: invito → risposta → intolleranze → app */
@@ -419,8 +476,8 @@ function render(force = true) {
 
 function viewFatal() {
   if (S.fatal === 'config') return `<div class="wrap" style="padding-top:40px"><div class="card">
-    <h2>⚙️ App da configurare</h2><p class="muted">Apri <b>index.html</b> e inserisci in alto <code>SUPABASE_URL</code> e <code>SUPABASE_KEY</code> del tuo progetto Supabase.</p></div></div>`;
-  return `<div class="wrap" style="padding-top:40px"><div class="card"><h2>😕 Qualcosa non va</h2>
+    <h2>App da configurare</h2><p class="muted">Apri <b>index.html</b> e inserisci in alto <code>SUPABASE_URL</code> e <code>SUPABASE_KEY</code> del tuo progetto Supabase.</p></div></div>`;
+  return `<div class="wrap" style="padding-top:40px"><div class="card"><h2>Qualcosa non va</h2>
     <p class="muted">${esc(S.fatal)}</p>
     <p class="muted small">Se dice che gli accessi anonimi sono disabilitati: Supabase &gt; Authentication &gt; Sign In / Providers &gt; abilita <b>Anonymous sign-ins</b>.</p>
     <button class="btn primary" onclick="location.reload()">Riprova</button></div></div>`;
@@ -463,7 +520,7 @@ function snowHtml(n) {
   let h = '';
   for (let i = 0; i < n; i++) {
     const size = 8 + Math.random() * 14, dur = 7 + Math.random() * 9;
-    h += `<i style="left:${(Math.random() * 100).toFixed(1)}%;font-size:${size.toFixed(0)}px;opacity:${(.45 + Math.random() * .5).toFixed(2)};animation-duration:${dur.toFixed(1)}s;animation-delay:-${(Math.random() * dur).toFixed(1)}s;--dx:${(Math.random() * 40 - 20).toFixed(0)}px">${Math.random() < .35 ? '❄' : '•'}</i>`;
+    h += `<i style="left:${(Math.random() * 100).toFixed(1)}%;font-size:${size.toFixed(0)}px;opacity:${(.45 + Math.random() * .5).toFixed(2)};animation-duration:${dur.toFixed(1)}s;animation-delay:-${(Math.random() * dur).toFixed(1)}s;--dx:${(Math.random() * 40 - 20).toFixed(0)}px">${Math.random() < .35 ? '' : '•'}</i>`;
   }
   return h;
 }
@@ -475,9 +532,9 @@ function partyDate() {
 function countdownText() {
   const today = new Date(); today.setHours(0, 0, 0, 0);
   const days = Math.round((partyDate() - today) / 86400000);
-  if (days > 1) return `❄ mancano ${days} giorni ❄`;
-  if (days === 1) return '❄ è domani! ❄';
-  if (days === 0) return '🎉 è oggi! 🎉';
+  if (days > 1) return `mancano ${days} giorni`;
+  if (days === 1) return 'è domani!';
+  if (days === 0) return 'è oggi!';
   return '';
 }
 function inviteHtml(compact = false) {
@@ -499,9 +556,9 @@ function inviteHtml(compact = false) {
     <div class="inv-of">compleanno di</div>
     <div class="inv-name">${esc(st.invite_name || 'Vincenzo')}</div>
     ${vid && !compact ? '<div class="inv-spacer"></div>' : ''}
-    <div class="inv-date">🎾 ${esc(date)}</div>
+    <div class="inv-date"> ${esc(date)}</div>
     ${cd ? `<div class="inv-count">${cd}</div>` : ''}
-    ${!compact ? `<div class="inv-details">${details ? linkify(details) : 'Tutti i dettagli arriveranno presto… ⛄'}</div>` : ''}
+    ${!compact ? `<div class="inv-details">${details ? linkify(details) : 'Tutti i dettagli arriveranno presto…'}</div>` : ''}
   </section>`;
 }
 window.addEventListener('scroll', () => {   // la scritta "Scorri" sparisce appena si scorre
@@ -519,28 +576,28 @@ function viewInvite() {
   const cur = draft('rsvp', S.myGuest && S.myGuest.rsvp || '');
   const opts = ['si', 'forse', 'no'].map(k => `<button type="button" class="${k} ${cur === k ? 'on' : ''}" onclick="pickRsvp('${k}',this)">${RSVP[k][1]}</button>`).join('');
   const top = INVITE_IMAGE
-    ? `<section class="inv-hero"><img src="${esc(INVITE_IMAGE)}" alt="Invito alla festa di compleanno di ${esc(S.settings.invite_name || 'Vincenzo')}">
-        <button class="scroll-cue" type="button" onclick="document.getElementById('rsvp-start').scrollIntoView({behavior:'smooth'})">Scorri per l'invito<span class="chev">⌄</span></button></section>
+    ? `<section class="inv-hero"><div class="inv-hero-bg" style="background-image:url('${esc(INVITE_IMAGE)}')"></div><img src="${esc(INVITE_IMAGE)}" alt="Invito alla festa di compleanno di ${esc(S.settings.invite_name || 'Vincenzo')}">
+        <button class="scroll-cue" type="button" onclick="document.getElementById('rsvp-start').scrollIntoView({behavior:'smooth'})">Scorri per l'invito<span class="chev"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></button></section>
        <div class="wrap" id="rsvp-start" style="padding-top:18px">`
     : `<div class="wrap" id="rsvp-start" style="padding-top:calc(16px + env(safe-area-inset-top))">${inviteHtml(false)}`;
   return `${top}
-    <div class="card"><h2>Rispondi all'invito</h2>
+    <div class="card rsvp-card"><h2 class="lettering"><img src="gradita-conferma.png" alt="È gradita conferma"></h2>
       ${editing
-        ? `<p class="muted small" style="margin:0">Stai rispondendo come <b style="color:var(--text)">${esc(S.me.name)}</b> · <a href="#" onclick="event.preventDefault();changeUser()">non sei tu?</a></p>`
+        ? `<p class="muted small" style="margin:0">Rispondi come <b style="color:var(--text)">${esc(S.me.name)}</b> · <a href="#" onclick="event.preventDefault();changeUser()">non sei tu?</a></p>`
         : `<div class="row"><div class="grow" style="min-width:130px"><label class="f">Nome</label><input data-draft="inv-first" id="inv-first" autocomplete="given-name" autocapitalize="words"></div>
            <div class="grow" style="min-width:130px"><label class="f">Cognome</label><input data-draft="inv-last" id="inv-last" autocomplete="family-name" autocapitalize="words"></div></div>`}
       <div class="rsvp">${opts}</div>
-      <button class="btn primary block" style="margin-top:14px" onclick="submitInvite()">Conferma</button>
+      <button class="btn primary block" style="margin-top:18px" onclick="submitInvite()">Conferma</button>
       ${S.editRsvp ? `<button class="btn ghost block" style="margin-top:8px" onclick="S.editRsvp=false;clearDrafts('rsvp');render()">Annulla</button>` : ''}
       ${editing ? '' : `<p class="muted small" style="margin:10px 0 0">Il telefono si ricorderà di te: non dovrai rifarlo.</p>`}
     </div>
-    ${S.isAdmin || editing ? '' : `<div class="center" style="margin:18px 0 30px"><button class="btn ghost sm" onclick="promptAdmin()">👑 Sono l'admin</button></div>`}
+    ${S.isAdmin || editing ? '' : `<div class="center" style="margin:18px 0 30px"><button class="btn ghost sm" onclick="promptAdmin()">Sono l'admin</button></div>`}
   </div>`;
 }
 
 async function submitInvite() {
   const rsvp = S.drafts.rsvp || (S.myGuest && S.myGuest.rsvp);
-  if (!rsvp) return toast('Scegli se ci sarai 🙂');
+  if (!rsvp) return toast('Scegli se ci sarai');
   const wasEditing = S.editRsvp && S.myGuest && S.myGuest.details_done;
   let error;
   if (S.me) {
@@ -560,18 +617,18 @@ async function submitInvite() {
   S.det = null;
   await reload();
   if (rsvp === 'no') toast('Risposta salvata');
-  else toast(rsvp === 'si' ? 'Evvai! 🎉' : 'Ok, ti aspettiamo 🤞', 'ok');
+  else toast(rsvp === 'si' ? 'Evvai!' : 'Ok, ti aspettiamo', 'ok');
 }
 
 /* ---------- 1b. non ci sarà */
 function viewDeclined() {
   return `<div class="wrap" style="padding-top:calc(16px + env(safe-area-inset-top))">
     ${inviteHtml(true)}
-    <div class="card center"><h2>Ci mancherai, ${esc(S.me.name.split(' ')[0])} 😢</h2>
+    <div class="card center"><h2>Ci mancherai, ${esc(S.me.name.split(' ')[0])}</h2>
       <p class="muted">Se cambi idea puoi modificare la risposta quando vuoi.</p>
       <button class="btn primary" onclick="S.editRsvp=true;render()">Cambia risposta</button>
       <p class="small" style="margin-top:14px"><a href="#" onclick="event.preventDefault();changeUser()">Non sei ${esc(S.me.name)}?</a></p></div>
-    ${S.isAdmin ? `<div class="center"><button class="btn ghost sm" onclick="S.tab='admin';render()">👑 Vai al pannello admin</button></div>` : ''}
+    ${S.isAdmin ? `<div class="center"><button class="btn ghost sm" onclick="S.tab='admin';render()">Vai al pannello admin</button></div>` : ''}
   </div>`;
 }
 
@@ -584,7 +641,7 @@ function viewIntol() {
   };
   const d = S.det;
   const tags = DIET_TAGS.map(t => `<button type="button" class="${d.tags.includes(t) ? 'on' : ''}" onclick="toggleTag(${esc(JSON.stringify(t))})">${esc(t)}</button>`).join('');
-  const seg = (field, val, emoji, label) => `<button type="button" class="${d[field] === val ? 'on si' : ''}" onclick="S.det.${field}=${esc(JSON.stringify(val))};render()"><span class="e">${emoji}</span>${label}</button>`;
+  const seg = (field, val, emoji, label) => `<button type="button" class="${d[field] === val ? 'on si' : ''}" onclick="S.det.${field}=${esc(JSON.stringify(val))};render()">${label}</button>`;
   // chi ha l'auto (con posti liberi) e gli altri invitati, per "vado con…"
   const others = S.carpool.filter(c => !S.me || c.participant_id !== S.me.id);
   const drivers = others.filter(c => c.car === 'si');
@@ -597,27 +654,27 @@ function viewIntol() {
     </select>`;
   const myPassengers = S.me ? S.carpool.filter(c => c.ride_with === S.me.id) : [];
   return `<div class="wrap" style="padding-top:calc(24px + env(safe-area-inset-top))">
-    <div class="muted small" style="margin-bottom:8px">${g.rsvp === 'forse' ? '🤔 Hai risposto forse' : '✅ Ci sarai!'} · ultimi dettagli</div>
-    <div class="card"><h2>🍽️ Intolleranze, allergie o esigenze alimentari?</h2>
+    <div class="muted small" style="margin-bottom:8px">${g.rsvp === 'forse' ? 'Hai risposto forse' : 'Ci sarai!'} · ultimi dettagli</div>
+    <div class="card"><h2>Intolleranze, allergie o esigenze alimentari?</h2>
       <p class="muted small" style="margin:0">Seleziona tutto quello che ti riguarda. Lo vede solo l'organizzazione.</p>
       <div class="tags">${tags}</div>
       <label class="f">Altro o dettagli (es. allergia grave)</label>
       <textarea data-draft="intol-text" id="intol-text" placeholder="Facoltativo">${esc(g.intolerances || '')}</textarea></div>
-    <div class="card"><h2>👫 Accompagnatore (+1)</h2>
-      <div class="rsvp two">${seg('plus', false, '🙋', 'Vengo da solo')}${seg('plus', true, '👫', 'Porto un +1')}</div>
+    <div class="card"><h2>Accompagnatore (+1)</h2>
+      <div class="rsvp two">${seg('plus', false, '', 'Vengo da solo')}${seg('plus', true, '', 'Porto un +1')}</div>
       ${d.plus ? `<label class="f">Nome e cognome dell'accompagnatore</label><input data-draft="plus-name" id="plus-name" value="${esc(g.plus_one_name || '')}" autocapitalize="words">
         <label class="f">Intolleranze dell'accompagnatore (se ce ne sono)</label><input data-draft="plus-notes" id="plus-notes" value="${esc(g.plus_one_notes || '')}" placeholder="Facoltativo">` : ''}</div>
-    <div class="card"><h2>🚗 Come arrivi?</h2>
-      <div class="rsvp two">${seg('car', 'si', '🚗', 'Ho l\'auto')}${seg('car', 'no', '🙋', 'Non ho l\'auto')}</div>
+    <div class="card"><h2>Come arrivi?</h2>
+      <div class="rsvp two">${seg('car', 'si', '', 'Ho l\'auto')}${seg('car', 'no', '', 'Non ho l\'auto')}</div>
       ${d.car === 'si' ? `<label class="f">Posti liberi per altri invitati (escluso te${d.plus ? ' e il tuo +1' : ''})</label>
         <div class="row"><button class="btn" onclick="S.det.seats=Math.max(0,S.det.seats-1);render()">−</button>
         <b style="font-size:1.4rem;min-width:40px;text-align:center">${d.seats}</b>
         <button class="btn" onclick="S.det.seats=Math.min(8,S.det.seats+1);render()">+</button></div>
-        <p class="small" style="margin:10px 0 0">${myPassengers.length ? `Vengono con te: <b>${myPassengers.map(c => esc(c.name)).join(', ')}</b>. ` : ''}Chi viaggia con te lo indichi dopo, dalla tab 🚗 Passaggi.</p>` : ''}
+        <p class="small" style="margin:10px 0 0">${myPassengers.length ? `Vengono con te: <b>${myPassengers.map(c => esc(c.name)).join(', ')}</b>. ` : ''}Chi viaggia con te lo indichi dopo, dalla tab Passaggi.</p>` : ''}
       ${d.car === 'no' ? `<label class="f">Ti sei già organizzato con qualcuno?</label>${rideSelect}` : ''}
       <p class="muted small" style="margin:10px 0 0">Auto e accompagnatore puoi aggiornarli quando vuoi dal menu in alto.</p></div>
     <button class="btn primary block" onclick="saveIntol()">${S.editIntol ? 'Salva' : 'Salva e continua'}</button>
-    <button class="btn ghost block" style="margin:8px 0 30px" onclick="${S.editIntol && g.details_done ? 'S.editIntol=false;S.det=null;render()' : 'S.editRsvp=true;render()'}">${S.editIntol && g.details_done ? 'Annulla' : '← Cambia risposta all\'invito'}</button>
+    <button class="btn ghost block" style="margin:8px 0 30px" onclick="${S.editIntol && g.details_done ? 'S.editIntol=false;S.det=null;render()' : 'S.editRsvp=true;render()'}">${S.editIntol && g.details_done ? 'Annulla' : 'Cambia risposta all\'invito'}</button>
   </div>`;
 }
 function toggleTag(t) {
@@ -641,9 +698,9 @@ async function saveIntol() {
   if (error) return toast(errMsg(error), 'err');
   clearDrafts('intol-text', 'plus-name', 'plus-notes');
   const first = !S.editIntol;
-  S.editIntol = false; S.det = null; if (first) S.tab = 'notizie';
+  S.editIntol = false; S.det = null; if (first) S.tab = 'invito';
   await reload();
-  toast(first ? 'Fatto! Benvenuto 🎾' : 'Salvato', 'ok');
+  toast(first ? 'Fatto! Benvenuto' : 'Salvato', 'ok');
 }
 
 /* ---------- passaggi */
@@ -671,13 +728,13 @@ function myCarEditor(mine) {
       const note = !c ? ' · non ha risposto' : c.car === 'si' ? ' · ha l\'auto' : c.ride_with ? ` · va con ${(partById(c.ride_with)?.name || '?').split(' ')[0]}` : '';
       return `<option value="${p.id}">${esc(p.name)}${c && c.plus_one ? ' (+1)' : ''}${esc(note)}</option>`;
     }).join('');
-  return `<div class="card" style="border-color:var(--ball)"><div class="row"><h3 class="grow" style="margin:0">🚗 La tua auto</h3>
+  return `<div class="card" style="border-color:var(--ball)"><div class="row"><h3 class="grow" style="margin:0">La tua auto</h3>
       <span class="badge ${used > tot ? 'err' : used === tot ? 'warn' : 'ok'}">${used}/${tot} posti occupati</span></div>
     <p class="muted small" style="margin:6px 0 0">Indica chi viaggia con te: si aggiorna anche nella loro scheda.</p>
     ${pas.map(x => `<div class="member"><span class="nm">${esc(x.name)}${x.plus_one ? ` <span class="muted small">+ ${esc(x.plus_one_name || '1')}</span>` : ''}</span>
-      <button class="btn sm ghost" onclick="removePassenger('${x.participant_id}')">✕</button></div>`).join('')}
+      <button class="btn sm ghost" onclick="removePassenger('${x.participant_id}')">Togli</button></div>`).join('')}
     ${others.map((o, i) => `<div class="member"><span class="nm">${esc(o)} <span class="muted small">(non in app)</span></span>
-      <button class="btn sm ghost" onclick="removeOther(${i})">✕</button></div>`).join('')}
+      <button class="btn sm ghost" onclick="removeOther(${i})">Togli</button></div>`).join('')}
     ${used < tot ? `<label class="f">Aggiungi un invitato</label>
       <div class="row"><select id="add-pas" class="grow" style="flex:1"><option value="">— scegli —</option>${cand}</select>
       <button class="btn sm gold" onclick="addPassenger()">Aggiungi</button></div>
@@ -685,7 +742,7 @@ function myCarEditor(mine) {
       <div class="row"><input data-draft="add-other" id="add-other" class="grow" style="flex:1" placeholder="Nome e cognome">
       <button class="btn sm" onclick="addOther()">Aggiungi</button></div>`
       : `<p class="small" style="margin:10px 0 0">Auto piena. Per aggiungere qualcuno aumenta i posti da <a href="#" onclick="event.preventDefault();S.editIntol=true;S.det=null;render()">Auto, +1 e intolleranze</a>.</p>`}
-    <div class="row" style="margin-top:12px"><button class="btn sm ghost" onclick="S.editIntol=true;S.det=null;render()">✏️ Cambia posti o auto</button></div></div>`;
+    <div class="row" style="margin-top:12px"><button class="btn sm ghost" onclick="S.editIntol=true;S.det=null;render()">Cambia posti o auto</button></div></div>`;
 }
 async function setPassengers(ids, others, okMsg) {
   const { error } = await sb.rpc('set_passengers', { p_ids: ids, p_others: others });
@@ -699,7 +756,7 @@ async function addPassenger() {
   if (c && c.car === 'si' && !confirm(`${p.name} ha indicato di avere l'auto: aggiungendolo alla tua, la sua auto verrà tolta. Continuare?`)) return;
   if (c && c.ride_with && c.ride_with !== mine.participant_id && !confirm(`${p.name} risulta in auto con ${partById(c.ride_with)?.name || '?'}. Spostarlo nella tua?`)) return;
   const ids = S.carpool.filter(x => x.ride_with === mine.participant_id).map(x => x.participant_id).concat(id);
-  await setPassengers(ids, mine.car_others || [], `${p.name.split(' ')[0]} è in auto con te 🚗`);
+  await setPassengers(ids, mine.car_others || [], `${p.name.split(' ')[0]} è in auto con te`);
 }
 async function removePassenger(id) {
   const mine = myCarRow(); if (!mine) return;
@@ -728,32 +785,32 @@ function viewRides() {
   const onBoard = cp.filter(c => c.car === 'si' || c.ride_with).reduce((n, c) => n + 1 + (c.plus_one ? 1 : 0), 0)
     + drivers.reduce((n, c) => n + (c.car_others || []).length, 0);
   const people = cp.reduce((n, c) => n + 1 + (c.plus_one ? 1 : 0), 0);
-  return `<h2>🚗 Passaggi</h2>
+  return `<h2>Passaggi</h2>
     ${mine && mine.car === 'si' ? myCarEditor(mine) : mine ? `<div class="card"><div class="row"><div class="grow">${
         mine.car === 'no' ? (mine.ride_with ? `Vai con <b>${esc(partById(mine.ride_with)?.name || '?')}</b>` : 'Cerchi ancora un passaggio')
         : 'Non hai ancora indicato come arrivi'}</div>
-      <button class="btn sm gold" onclick="S.editIntol=true;S.det=null;render()">✏️ Aggiorna</button></div></div>` : ''}
+      <button class="btn sm gold" onclick="S.editIntol=true;S.det=null;render()">Aggiorna</button></div></div>` : ''}
     ${S.isAdmin ? `<div class="card small"><b>${onBoard}</b> persone già sistemate in ${drivers.length} auto su <b>${people}</b> (sì + forse, accompagnatori inclusi)</div>` : ''}
     <h3 style="margin:16px 0 8px">Auto (${drivers.length})</h3>
     ${drivers.map(c => {
       const free = freeSeats(c), used = usedSeats(c), cap = 1 + (c.plus_one ? 1 : 0) + (c.car_seats || 0);
-      return `<div class="card"><div class="row"><b class="grow">🚗 Auto di ${esc(c.name)}</b>
+      return `<div class="card"><div class="row"><b class="grow">Auto di ${esc(c.name)}</b>
           <span class="badge ${used > (c.car_seats || 0) ? 'err' : free ? 'ok' : 'warn'}">${free ? (free === 1 ? '1 posto libero' : `${free} posti liberi`) : used > (c.car_seats || 0) ? 'troppi' : 'piena'}</span></div>
         <div class="small muted" style="margin-top:2px">${cap - free}/${cap} a bordo</div>
         <ol style="margin:8px 0 0;padding-left:20px">${carCrew(c).map(x => `<li style="padding:2px 0">${x}</li>`).join('')}</ol></div>`;
     }).join('') || '<div class="card muted small">Nessuno ha ancora indicato un\'auto.</div>'}
     <div class="card"><h3>Cercano un passaggio (${looking.length})</h3>
-      ${looking.map(c => `<div class="member"><span class="nm">${esc(c.name)}${plus(c)}</span></div>`).join('') || '<div class="muted small">Nessuno 👍</div>'}</div>
+      ${looking.map(c => `<div class="member"><span class="nm">${esc(c.name)}${plus(c)}</span></div>`).join('') || '<div class="muted small">Nessuno</div>'}</div>
     ${unknown.length ? `<div class="card"><h3>Non hanno ancora indicato (${unknown.length})</h3><div class="small muted">${unknown.map(c => esc(c.name)).join(', ')}</div></div>` : ''}
-    <p class="muted small center">Chi guida aggiunge i passeggeri qui sopra; chi non guida può indicare "vado con…" da ✏️ Aggiorna.</p>`;
+    <p class="muted small center">Chi guida aggiunge i passeggeri qui sopra; chi non guida può indicare "vado con…" da Aggiorna.</p>`;
 }
 
 /* ---------- app principale */
 function header() {
   const team = S.me ? teamById(S.me.team_id) : null;
-  const who = S.me ? `<span class="dot" style="background:${esc(team ? team.color : '#5d7596')}"></span>${esc(S.me.name)}${team ? ' · ' + esc(team.name) : ''}` : '👑 Admin';
-  return `<header class="top"><div class="wrap"><div class="logo"><span>🎾</span> ${esc(S.settings.title)}</div>
-    <button class="chip" onclick="openMenu()">${who} ▾</button></div></header>`;
+  const who = S.me ? `${team && S.settings.game_started ? `<span class="dot" style="background:${esc(team.color)}"></span>` : ''}${esc(S.me.name.split(' ')[0])}` : 'Admin';
+  return `<header class="top"><div class="wrap"><div class="logo"><img src="chapter30.png" alt="Chapter 30"></div>
+    <button class="chip" onclick="openMenu()">${who}<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div></header>`;
 }
 
 function newsSeenKey() { return 'fanta-news-seen-' + (S.me ? S.me.id : 'admin'); }
@@ -767,17 +824,37 @@ function markNewsSeen() {
 }
 
 function viewMain() {
-  const tabs = [['notizie', '📰', 'Notizie']];
-  if (S.me && teamById(S.me.team_id)) tabs.push(['squadra', '🎯', 'Obiettivi']);
-  tabs.push(['passaggi', '🚗', 'Passaggi']);
-  tabs.push(['classifica', '🏆', 'Classifica']);
-  if (S.isAdmin) tabs.push(['admin', '👑', 'Admin']);
+  const game = !!S.settings.game_started;      // Obiettivi e Classifica compaiono solo a gioco avviato
+  const tabs = [];
+  if (S.me) tabs.push(['invito', 'Invito']);
+  if (game && S.me && teamById(S.me.team_id)) tabs.push(['squadra', 'Obiettivi']);
+  tabs.push(['passaggi', 'Passaggi']);
+  if (game || S.isAdmin) tabs.push(['classifica', 'Classifica']);
+  if (S.isAdmin) tabs.push(['admin', 'Admin']);
   if (!tabs.find(t => t[0] === S.tab)) S.tab = tabs[0][0];
-  if (S.tab === 'notizie') markNewsSeen();
-  const unread = unreadNews();
-  const content = S.tab === 'notizie' ? viewNews() : S.tab === 'squadra' ? viewTeam() : S.tab === 'passaggi' ? viewRides() : S.tab === 'classifica' ? viewBoard() : viewAdmin();
+  const content = S.tab === 'invito' ? viewHome() : S.tab === 'squadra' ? viewTeam() : S.tab === 'passaggi' ? viewRides() : S.tab === 'classifica' ? viewBoard() : viewAdmin();
   return header() + `<main class="wrap">${content}</main>` +
-    `<nav class="tabs">${tabs.map(([k, i, l]) => `<button class="${S.tab === k ? 'on' : ''}" onclick="setTab('${k}')"><span class="i">${i}</span>${l}${k === 'notizie' && unread ? `<span class="nb">${unread}</span>` : ''}</button>`).join('')}</nav>`;
+    `<nav class="tabs">${tabs.map(([k, l]) => `<button class="${S.tab === k ? 'on' : ''}" onclick="setTab('${k}')">${l}</button>`).join('')}</nav>`;
+}
+
+/* ---------- home: invito + riepilogo della propria risposta */
+function viewHome() {
+  const g = S.myGuest || {};
+  const lab = { si: 'Ci sarò', forse: 'Forse', no: 'Non ci sarò' };
+  const tags = (g.diet_tags || []).filter(Boolean);
+  const intol = [...tags, g.intolerances].filter(Boolean).join(', ') || '—';
+  const ride = g.car === 'si' ? `In auto, ${g.car_seats ?? 0} posti liberi per altri`
+    : g.car === 'no' ? (g.ride_with ? `Con ${esc(partById(g.ride_with)?.name || '?')}` : 'Cerco un passaggio') : '—';
+  const row = (k, v) => `<div class="kv"><span>${k}</span><b>${v}</b></div>`;
+  return `${inviteHtml(true)}
+    <div class="card"><h3>La tua risposta</h3>
+      ${row('Partecipazione', esc(lab[g.rsvp] || '—'))}
+      ${row('Accompagnatore', g.plus_one ? esc(g.plus_one_name || 'Sì') : 'No')}
+      ${row('Intolleranze', esc(intol))}
+      ${row('Viaggio', ride)}
+      <div class="row" style="margin-top:14px">
+        <button class="btn sm" onclick="S.editIntol=true;S.det=null;render()">Modifica dettagli</button>
+        <button class="btn sm ghost" onclick="S.editRsvp=true;render()">Cambia risposta</button></div></div>`;
 }
 function setTab(k) { S.tab = k; render(); window.scrollTo(0, 0); }
 
@@ -788,28 +865,28 @@ function viewNews() {
     const isImg = n.file_path && (n.file_type || '').startsWith('image/');
     const att = !n.file_path ? '' : isImg
       ? `<img class="att" data-bucket="${NEWS_BUCKET}" data-path="${esc(n.file_path)}" alt="" onclick="openNewsFile('${n.id}')">`
-      : `<button class="btn sm" style="margin-top:10px" onclick="openNewsFile('${n.id}')">📄 Apri allegato</button>`;
+      : `<button class="btn sm" style="margin-top:10px" onclick="openNewsFile('${n.id}')">Apri allegato</button>`;
     return `<article class="card news ${n.pinned ? 'pinned' : ''}">
-      <div class="row"><h3 class="grow" style="margin:0">${n.pinned ? '📌 ' : ''}${esc(n.title)}</h3><span class="muted small">${fmtDate(n.created_at)}</span></div>
+      <div class="row"><h3 class="grow" style="margin:0">${n.pinned ? ' ' : ''}${esc(n.title)}</h3><span class="muted small">${fmtDate(n.created_at)}</span></div>
       ${n.body ? `<div class="body">${linkify(n.body)}</div>` : ''}${att}
       ${S.isAdmin ? `<div class="row" style="margin-top:10px">
-        <button class="btn sm" onclick="editNews('${n.id}')">✏️ Modifica</button>
-        <button class="btn sm" onclick="run(sb.from('news').update({pinned:${!n.pinned}}).eq('id','${n.id}'))">${n.pinned ? 'Sblocca' : '📌 Fissa in alto'}</button>
-        <button class="btn sm danger" onclick="deleteNews('${n.id}')">🗑</button></div>` : ''}
+        <button class="btn sm" onclick="editNews('${n.id}')">Modifica</button>
+        <button class="btn sm" onclick="run(sb.from('news').update({pinned:${!n.pinned}}).eq('id','${n.id}'))">${n.pinned ? 'Sblocca' : 'Fissa in alto'}</button>
+        <button class="btn sm danger" onclick="deleteNews('${n.id}')">Elimina</button></div>` : ''}
     </article>`;
   }).join('');
-  return inviteHtml(true) + composer + (list || `<div class="card empty">Ancora nessuna notizia.<br>Menu, programma e novità arriveranno qui. 🎾</div>`);
+  return inviteHtml(true) + composer + (list || `<div class="card empty">Ancora nessuna notizia.<br>Menu, programma e novità arriveranno qui.</div>`);
 }
 function newsComposer() {
   const ed = S.editingNews ? S.news.find(n => n.id === S.editingNews) : null;
   const curFile = ed && ed.file_path && !S.newsRemoveFile;
-  return `<div class="card" id="newsForm"><h3>${ed ? '✏️ Modifica notizia' : '📣 Nuova notizia'}</h3>
+  return `<div class="card" id="newsForm"><h3>${ed ? 'Modifica notizia' : 'Nuova notizia'}</h3>
     <input data-draft="n-title" id="n-title" placeholder="Titolo (es. Il menu)">
     <textarea data-draft="n-body" id="n-body" placeholder="Testo" style="margin-top:8px;min-height:90px"></textarea>
-    ${curFile ? `<div class="row small" style="margin-top:8px"><span class="muted grow">📎 Allegato presente</span><button class="btn sm ghost" onclick="S.newsRemoveFile=true;render()">Rimuovi</button></div>` : ''}
-    <label class="btn sm" style="margin-top:8px">📎 ${S.newsFile ? esc(S.newsFile.name) : (curFile ? 'Sostituisci allegato' : 'Allega foto o PDF')}
+    ${curFile ? `<div class="row small" style="margin-top:8px"><span class="muted grow">Allegato presente</span><button class="btn sm ghost" onclick="S.newsRemoveFile=true;render()">Rimuovi</button></div>` : ''}
+    <label class="btn sm" style="margin-top:8px"> ${S.newsFile ? esc(S.newsFile.name) : (curFile ? 'Sostituisci allegato' : 'Allega foto o PDF')}
       <input type="file" accept="image/*,application/pdf" hidden onchange="S.newsFile=this.files[0]||null;render()"></label>
-    ${S.newsFile ? `<button class="btn sm ghost" onclick="S.newsFile=null;render()">✕</button>` : ''}
+    ${S.newsFile ? `<button class="btn sm ghost" onclick="S.newsFile=null;render()">Annulla</button>` : ''}
     <label class="row small" style="margin-top:10px"><input type="checkbox" data-draft="n-pin" id="n-pin"> Fissa in alto</label>
     <div class="row" style="margin-top:12px"><button class="btn primary grow" onclick="saveNews()">${ed ? 'Salva' : 'Pubblica'}</button>
     ${ed ? `<button class="btn" onclick="cancelNews()">Annulla</button>` : ''}</div></div>`;
@@ -840,7 +917,7 @@ async function saveNews() {
     if (oldPath && (S.newsFile || S.newsRemoveFile)) await sb.storage.from(NEWS_BUCKET).remove([oldPath]);
     S.busy = false; closeModal();
     S.editingNews = null; S.newsFile = null; S.newsRemoveFile = false; clearDrafts('n-title', 'n-body', 'n-pin');
-    toast(ed ? 'Notizia aggiornata' : 'Notizia pubblicata 📣', 'ok');
+    toast(ed ? 'Notizia aggiornata' : 'Notizia pubblicata', 'ok');
   } catch (e) { S.busy = false; closeModal(); toast(errMsg(e), 'err'); }
   await reload();
 }
@@ -875,9 +952,9 @@ function viewTeam() {
     const wasRevoked = !s && S.submissions.some(x => x.objective_id === o.id && x.team_id === team.id && x.revoked);
     const media = s ? thumbHtml(s) : '';
     const status = s
-      ? `<div class="small" style="margin-top:6px"><span class="badge ok">✓ Completato</span> <span class="muted">da ${esc(partById(s.participant_id)?.name || '?')} · ${fmtDate(s.created_at)}</span></div>`
+      ? `<div class="small" style="margin-top:6px"><span class="badge ok">Completato</span> <span class="muted">da ${esc(partById(s.participant_id)?.name || '?')} · ${fmtDate(s.created_at)}</span></div>`
       : `${wasRevoked ? `<div class="small" style="margin-top:6px"><span class="badge err">Prova precedente revocata dall'admin</span></div>` : ''}
-         <label class="btn primary sm" style="margin-top:10px">📷 Carica foto/video
+         <label class="btn primary sm" style="margin-top:10px">Carica foto/video
            <input type="file" accept="image/*,video/*" hidden onchange="uploadProof('${o.id}', this)"></label>`;
     return `<div class="card obj ${s ? 'done' : ''}">${media}<div class="body">
       <div class="row"><h3 class="grow" style="margin:0">${esc(o.title)}</h3><span class="pts">${o.points} pt</span></div>
@@ -888,13 +965,13 @@ function viewTeam() {
       <h2 style="margin:2px 0"><span class="dot" style="background:${esc(team.color)}"></span> ${esc(team.name)}</h2>
       <div class="muted small">Posizione ${me ? medal(me.pos) : '—'} su ${st.length} · ${done}/${objs.length} obiettivi</div></div>
       <div class="center"><div class="big">${me ? me.pts : 0}</div><div class="muted small">punti</div></div></div>
-    ${cards || `<div class="card empty">Nessun obiettivo per ora. Restate sintonizzati! 👀</div>`}`;
+    ${cards || `<div class="card empty">Nessun obiettivo per ora. Restate sintonizzati!</div>`}`;
 }
 
 function thumbHtml(s, cls = 'thumb') {
-  if (s.file_deleted) return `<div class="${cls} ph" title="File archiviato dall'admin">🗄️</div>`;
+  if (s.file_deleted) return `<div class="${cls} ph" title="File archiviato dall'admin">Archiviato</div>`;
   if (s.thumb_path) return `<img class="${cls}" data-path="${esc(s.thumb_path)}" alt="" onclick="viewSub('${s.id}')">`;
-  return `<div class="${cls} ph" onclick="viewSub('${s.id}')">${isVideo(s) ? '🎬' : '🖼️'}</div>`;
+  return `<div class="${cls} ph" onclick="viewSub('${s.id}')">${isVideo(s) ? 'Video' : 'Foto'}</div>`;
 }
 
 async function hydrateThumbs() {
@@ -923,7 +1000,7 @@ async function viewSub(id) {
   showModal(`${isVideo(s) ? `<video class="view" src="${esc(data.signedUrl)}" controls playsinline autoplay></video>` : `<img class="view" src="${esc(data.signedUrl)}" alt="">`}
     <h3 style="margin-top:10px">${esc(o ? o.title : 'Obiettivo')}</h3>
     <div class="muted small">${esc(t ? t.name : '')} · ${esc(p ? p.name : '?')} · ${fmtDate(s.created_at)} · ${fmtSize(s.file_size)}</div>
-    <div class="row" style="margin-top:12px">${S.isAdmin ? `<button class="btn gold" onclick="downloadOriginal('${s.id}')">⬇︎ Scarica originale</button>` : ''}
+    <div class="row" style="margin-top:12px">${S.isAdmin ? `<button class="btn gold" onclick="downloadOriginal('${s.id}')">Scarica originale</button>` : ''}
     <button class="btn grow" onclick="closeModal()">Chiudi</button></div>`);
 }
 
@@ -1015,7 +1092,7 @@ async function uploadProof(oid, input) {
     const { error } = await sb.rpc('submit_proof', { p_objective: oid, p_path: path, p_thumb: thumbPath, p_type: file.type || '', p_size: file.size, p_name: file.name || '' });
     if (error) throw error;
     S.busy = false; closeModal();
-    toast(`Prova caricata! +${o.points} punti 🎉`, 'ok');
+    toast(`Prova caricata! +${o.points} punti`, 'ok');
   } catch (e) {
     S.busy = false; closeModal();
     alert('Caricamento non riuscito: ' + errMsg(e));
@@ -1026,9 +1103,9 @@ async function uploadProof(oid, input) {
 /* ---------------------------------------------------------- classifica */
 function viewBoard() {
   const st = standings();
-  if (!st.length) return `<div class="card empty">🎾 Le squadre non sono ancora state formate.<br>Appena pronte, qui vedrai la classifica.</div>`;
+  if (!st.length) return `<div class="card empty">Le squadre non sono ancora state formate.<br>Appena pronte, qui vedrai la classifica.</div>`;
   const myTeam = S.me && S.me.team_id;
-  return `<h2>🏆 Classifica</h2>` + st.map(r => {
+  return `<h2>Classifica</h2>` + st.map(r => {
     const members = S.participants.filter(p => p.team_id === r.t.id).map(p => ({ p, pts: partScore(p.id) })).sort((a, b) => b.pts - a.pts);
     const subs = validSubs().filter(s => s.team_id === r.t.id);
     const adj = S.adjustments.filter(a => a.team_id === r.t.id);
@@ -1047,11 +1124,11 @@ function viewBoard() {
 function openMenu() {
   showModal(`<h3>${S.me ? esc(S.me.name) : 'Menu'}</h3>
     <div style="display:grid;gap:8px;margin-top:10px">
-      ${S.me ? `<button class="btn" onclick="closeModal();S.editIntol=true;S.det=null;render()">🚗 Auto, +1 e intolleranze</button>
-                <button class="btn" onclick="closeModal();S.editRsvp=true;render()">✏️ Cambia risposta all'invito</button>
-                <button class="btn" onclick="closeModal();changeUser()">🔄 Non sono ${esc(S.me.name)}</button>`
-             : `<button class="btn" onclick="closeModal();S.editRsvp=true;render()">🎟️ Rispondi all'invito come ospite</button>`}
-      ${S.isAdmin ? `<button class="btn" onclick="closeModal();setTab('admin')">👑 Pannello admin</button>` : `<button class="btn" onclick="closeModal();promptAdmin()">👑 Accesso admin</button>`}
+      ${S.me ? `<button class="btn" onclick="closeModal();S.editIntol=true;S.det=null;render()">Auto, +1 e intolleranze</button>
+                <button class="btn" onclick="closeModal();S.editRsvp=true;render()">Cambia risposta all'invito</button>
+                <button class="btn" onclick="closeModal();changeUser()">Non sono ${esc(S.me.name)}</button>`
+             : `<button class="btn" onclick="closeModal();S.editRsvp=true;render()">Rispondi all'invito come ospite</button>`}
+      ${S.isAdmin ? `<button class="btn" onclick="closeModal();setTab('admin')">Pannello admin</button>` : `<button class="btn" onclick="closeModal();promptAdmin()">Accesso admin</button>`}
       <button class="btn" onclick="closeModal();reload();toast('Aggiornato')">↻ Aggiorna dati</button>
       <button class="btn ghost" onclick="closeModal()">Chiudi</button></div>
     <p class="muted small" style="margin-top:14px">Consiglio: aggiungi l'app alla schermata Home (Condividi › Aggiungi a Home) per ritrovarla subito.</p>`);
@@ -1064,7 +1141,7 @@ async function changeUser() {
 }
 
 function promptAdmin() {
-  showModal(`<h3>👑 Accesso admin</h3><form onsubmit="event.preventDefault();adminLogin()">
+  showModal(`<h3>Accesso admin</h3><form onsubmit="event.preventDefault();adminLogin()">
     <input id="adminPin" type="password" inputmode="numeric" placeholder="PIN" autocomplete="off">
     <div class="row" style="margin-top:12px"><button class="btn primary grow" type="submit">Entra</button>
     <button class="btn" type="button" onclick="closeModal()">Annulla</button></div></form>`);
@@ -1076,7 +1153,7 @@ async function adminLogin() {
   if (error) return toast(errMsg(error), 'err');
   if (!data) return toast('PIN errato', 'err');
   closeModal(); S.tab = 'admin'; S.editRsvp = false;
-  await reload(); toast('Sei dentro come admin 👑', 'ok');
+  await reload(); toast('Sei dentro come admin', 'ok');
 }
 
 /* ===================================================================== ADMIN */
@@ -1089,7 +1166,7 @@ async function run(q, okMsg) {
 }
 
 function viewAdmin() {
-  const tabs = [['invitati', '👋 Invitati'], ['squadre', '👥 Squadre'], ['obiettivi', '🎯 Obiettivi'], ['prove', '📸 Prove'], ['punteggi', '📊 Punteggi'], ['impostazioni', '⚙️ Impostazioni']];
+  const tabs = [['invitati', 'Invitati'], ['squadre', 'Squadre'], ['obiettivi', 'Obiettivi'], ['prove', 'Prove'], ['punteggi', 'Punteggi'], ['impostazioni', 'Impostazioni']];
   const v = { invitati: adminGuests, squadre: adminTeams, obiettivi: adminObjectives, prove: adminProofs, punteggi: adminScores, impostazioni: adminSettings }[S.adminTab];
   return `<div class="subtabs">${tabs.map(([k, l]) => `<button class="${S.adminTab === k ? 'on' : ''}" onclick="S.adminTab='${k}';render()">${l}</button>`).join('')}</div>${v()}`;
 }
@@ -1114,33 +1191,33 @@ function adminGuests() {
   const pending = coming.filter(x => !x.g || !x.g.details_done).length;
   const f = (k, l) => `<button class="${S.guestFilter === k ? 'on' : ''}" onclick="S.guestFilter='${k}';render()">${l}</button>`;
   return `<div class="stats">
-      <div><b style="color:var(--ok)">${c('si')}</b><span>✅ Ci saranno</span></div>
-      <div><b style="color:var(--warn)">${c('forse')}</b><span>🤔 Forse</span></div>
-      <div><b style="color:var(--err)">${c('no')}</b><span>❌ No</span></div>
-      <div><b class="muted">${c('')}</b><span>⏳ Senza risposta</span></div></div>
+      <div><b style="color:var(--ok)">${c('si')}</b><span>Ci saranno</span></div>
+      <div><b style="color:var(--warn)">${c('forse')}</b><span>Forse</span></div>
+      <div><b style="color:var(--err)">${c('no')}</b><span>No</span></div>
+      <div><b class="muted">${c('')}</b><span>Senza risposta</span></div></div>
     <div class="card"><div class="row"><div class="grow"><b>${c('si') + c('forse') + plusOnes}</b> <span class="muted">persone possibili (sì + forse${plusOnes ? `, di cui ${plusOnes} accompagnatori` : ''})</span>
-      <div class="small muted">Sicuri: ${c('si') + coming.filter(x => x.r === 'si' && x.g.plus_one).length} · 🚗 auto: ${coming.filter(x => x.g && x.g.car === 'si').length} · cercano passaggio: ${coming.filter(x => x.g && x.g.car === 'no' && !x.g.ride_with).length}</div></div>
-      <button class="btn sm gold" onclick="exportGuests()">⬇︎ CSV</button></div></div>
-    <div class="card"><h3>🍽️ Intolleranze ed esigenze</h3>
+      <div class="small muted">Sicuri: ${c('si') + coming.filter(x => x.r === 'si' && x.g.plus_one).length} · auto: ${coming.filter(x => x.g && x.g.car === 'si').length} · cercano passaggio: ${coming.filter(x => x.g && x.g.car === 'no' && !x.g.ride_with).length}</div></div>
+      <button class="btn sm gold" onclick="exportGuests()">Esporta CSV</button></div></div>
+    <div class="card"><h3>Intolleranze ed esigenze</h3>
       ${Object.keys(agg).length ? `<ul class="list">${DIET_TAGS.filter(t => agg[t]).map(t => `<li><span><b>${esc(t)}</b> <span class="muted small">· ${agg[t].map(esc).join(', ')}</span></span><span class="pts">${agg[t].length}</span></li>`).join('')}</ul>` : '<div class="muted small">Nessuna segnalata finora.</div>'}
       ${notes.length ? `<div class="muted small" style="margin-top:10px">Note</div><ul class="list">${notes.map(x => `<li><span><b>${esc(x.p.name)}</b>: ${esc(x.g.intolerances)}</span></li>`).join('')}</ul>` : ''}
-      ${pending ? `<p class="muted small" style="margin:10px 0 0">⚠️ ${pending} tra sì/forse non hanno ancora compilato i dettagli.</p>` : ''}</div>
-    <div class="subtabs" style="padding-top:0">${f('', 'Tutti')}${f('si', '✅ Sì')}${f('forse', '🤔 Forse')}${f('no', '❌ No')}${f('none', '⏳ Senza risposta')}</div>
+      ${pending ? `<p class="muted small" style="margin:10px 0 0"> ${pending} tra sì/forse non hanno ancora compilato i dettagli.</p>` : ''}</div>
+    <div class="subtabs" style="padding-top:0">${f('', 'Tutti')}${f('si', 'Sì')}${f('forse', 'Forse')}${f('no', 'No')}${f('none', 'Senza risposta')}</div>
     <div class="card">${list.map(x => {
       const t = teamById(x.p.team_id), tags = (x.g && x.g.diet_tags || []).filter(t => t !== 'Nessuna');
       return `<div class="member" style="align-items:flex-start"><div class="grow" style="min-width:150px"><b>${esc(x.p.name)}</b>
           <div class="small muted">${t ? `<span class="dot" style="background:${esc(t.color)}"></span> ${esc(t.name)}` : 'senza squadra'}${x.g ? ' · ' + fmtDate(x.g.updated_at) : ''}</div>
-          ${tags.length || (x.g && x.g.intolerances) ? `<div class="small" style="margin-top:4px">🍽️ ${esc([...tags, x.g.intolerances].filter(Boolean).join(' · '))}</div>` : ''}
-          ${x.g && x.g.plus_one ? `<div class="small" style="margin-top:4px">👫 +1: ${esc(x.g.plus_one_name || '')}${x.g.plus_one_notes ? ' · 🍽️ ' + esc(x.g.plus_one_notes) : ''}</div>` : ''}
+          ${tags.length || (x.g && x.g.intolerances) ? `<div class="small" style="margin-top:4px"> ${esc([...tags, x.g.intolerances].filter(Boolean).join(' · '))}</div>` : ''}
+          ${x.g && x.g.plus_one ? `<div class="small" style="margin-top:4px">+1: ${esc(x.g.plus_one_name || '')}${x.g.plus_one_notes ? ' · ' + esc(x.g.plus_one_notes) : ''}</div>` : ''}
           ${x.g && x.g.car ? `<div class="small" style="margin-top:4px">${carText(x.g)}</div>` : ''}</div>
         ${rsvpBadge(x.r)}</div>`;
     }).join('') || '<div class="muted small">Nessuno.</div>'}</div>
-    <p class="muted small">Chi risponde all'invito compare qui in automatico. Per formare le squadre vai su 👥 Squadre.</p>`;
+    <p class="muted small">Chi risponde all'invito compare qui in automatico. Per formare le squadre vai su Squadre.</p>`;
 }
 function carText(g) {
   if (g.car === 'si') { const c = S.carpool.find(x => x.participant_id === g.participant_id);
-    return `🚗 ha l'auto · ${c ? usedSeats(c) : 0}/${g.car_seats ?? 0} posti occupati${(g.car_others || []).length ? ' · con ' + esc(g.car_others.join(', ')) : ''}`; }
-  if (g.car === 'no') return g.ride_with ? `🙋 va con ${esc(partById(g.ride_with)?.name || '?')}` : '🙋 cerca un passaggio';
+    return `ha l'auto · ${c ? usedSeats(c) : 0}/${g.car_seats ?? 0} posti occupati${(g.car_others || []).length ? ' · con ' + esc(g.car_others.join(', ')) : ''}`; }
+  if (g.car === 'no') return g.ride_with ? `va con ${esc(partById(g.ride_with)?.name || '?')}` : 'cerca un passaggio';
   return '';
 }
 function exportGuests() {
@@ -1166,11 +1243,11 @@ function memberRow(p) {
   const devs = S.devices.filter(d => d.participant_id === p.id);
   const g = guestOf(p.id);
   return `<div class="member"><span class="nm">${esc(p.name)}</span>${rsvpBadge(g && g.rsvp)}
-    <span class="badge ${devs.length ? 'ok' : 'hid'}" title="${esc(devs.map(d => d.device_label).join(', '))}">${devs.length ? '📱 ' + devs.length : '📱 0'}</span>
+    <span class="badge ${devs.length ? 'ok' : 'hid'}" title="${esc(devs.map(d => d.device_label).join(', '))}">${devs.length ? devs.length + (devs.length === 1 ? ' telefono' : ' telefoni') : 'nessun telefono'}</span>
     <select onchange="moveParticipant('${p.id}', this.value)">${teamOptions(p.team_id)}</select>
-    <button class="btn sm ghost" onclick="renameParticipant('${p.id}')" title="Rinomina">✏️</button>
-    ${devs.length ? `<button class="btn sm ghost" onclick="disconnectDevices('${p.id}')" title="Scollega dispositivi">🔌</button>` : ''}
-    <button class="btn sm ghost" onclick="deleteParticipant('${p.id}')" title="Elimina">🗑</button></div>`;
+    <button class="btn sm ghost" onclick="renameParticipant('${p.id}')" title="Rinomina">Rinomina</button>
+    ${devs.length ? `<button class="btn sm ghost" onclick="disconnectDevices('${p.id}')" title="Scollega dispositivi">Scollega</button>` : ''}
+    <button class="btn sm ghost" onclick="deleteParticipant('${p.id}')" title="Elimina">Elimina</button></div>`;
 }
 function looseParticipants() {
   const order = { si: 0, forse: 1, no: 2 };
@@ -1185,7 +1262,7 @@ function adminTeams() {
       <input type="color" data-draft="t-color" id="t-color" value="${esc(draft('t-color', randomColor()))}">
       <button class="btn primary" onclick="addTeam()">Crea</button></div></div>
     <div class="card"><h3>Senza squadra <span class="muted small">(${loose.length})</span></h3>
-      ${S.teams.length && drawable ? `<button class="btn sm gold" style="margin:4px 0 6px" onclick="drawTeams()">🎲 Distribuisci a caso i ${drawable} con Sì/Forse</button>` : ''}
+      ${S.teams.length && drawable ? `<button class="btn sm gold" style="margin:4px 0 6px" onclick="drawTeams()">Distribuisci a caso i ${drawable} con Sì/Forse</button>` : ''}
       ${loose.map(memberRow).join('') || '<div class="muted small">Nessuno</div>'}
       <label class="f">Aggiungi a mano persone senza squadra (uno per riga)</label>
       <textarea data-draft="p-new-none" id="p-new-none"></textarea>
@@ -1195,11 +1272,11 @@ function adminTeams() {
       return `<div class="card"><div class="row">
         <input type="color" value="${esc(t.color)}" onchange="run(sb.from('teams').update({color:this.value}).eq('id','${t.id}'))">
         <h3 class="grow" style="margin:0">${esc(t.name)} <span class="muted small">(${ps.length})</span></h3>
-        <button class="btn sm ghost" onclick="renameTeam('${t.id}')">✏️</button>
-        <button class="btn sm ghost" onclick="deleteTeam('${t.id}')">🗑</button></div>
+        <button class="btn sm ghost" onclick="renameTeam('${t.id}')">Rinomina</button>
+        <button class="btn sm ghost" onclick="deleteTeam('${t.id}')">Elimina</button></div>
         ${ps.map(memberRow).join('') || '<div class="muted small" style="margin-top:8px">Nessun membro: assegnali dal menu a tendina accanto ai nomi.</div>'}</div>`;
     }).join('')}
-    <p class="muted small">📱 = telefoni collegati a quella persona. 🔌 scollega (es. telefono perso o nome sbagliato).</p>`;
+    <p class="muted small">"Telefoni" indica i dispositivi collegati a quella persona. "Scollega" serve (es. telefono perso o nome sbagliato).</p>`;
 }
 function randomColor() { const c = ['#DCF03A', '#2F6FC0', '#FF6B81', '#39D0B3', '#FFC857', '#9B6BFF', '#FF8C42', '#E8F1FF']; return c[S.teams.length % c.length]; }
 async function drawTeams() {
@@ -1217,7 +1294,7 @@ async function drawTeams() {
   });
   const res = await Promise.all(moves);
   const bad = res.find(r => r.error);
-  toast(bad ? errMsg(bad.error) : 'Squadre sorteggiate 🎲', bad ? 'err' : 'ok');
+  toast(bad ? errMsg(bad.error) : 'Squadre sorteggiate', bad ? 'err' : 'ok');
   await reload();
 }
 async function addTeam() {
@@ -1266,7 +1343,7 @@ function adminObjectives() {
   const ed = S.editingObj ? objById(S.editingObj) : null;
   const doneBy = o => S.submissions.filter(s => s.objective_id === o.id && !s.revoked).length;
   const target = o => o.team_id ? 1 : S.teams.length;
-  return `<div class="card" id="objForm"><h3>${ed ? '✏️ Modifica obiettivo' : 'Nuovo obiettivo'}</h3>
+  return `<div class="card" id="objForm"><h3>${ed ? 'Modifica obiettivo' : 'Nuovo obiettivo'}</h3>
       <label class="f">Titolo</label><input data-draft="o-title" id="o-title" placeholder="Es. Foto con un vigile in divisa">
       <label class="f">Descrizione / regole (facoltativa)</label><textarea data-draft="o-desc" id="o-desc"></textarea>
       <div class="row"><div style="width:110px"><label class="f">Punti</label><input data-draft="o-points" id="o-points" type="number" inputmode="numeric" value="10"></div>
@@ -1276,15 +1353,15 @@ function adminObjectives() {
       ${ed ? `<button class="btn" onclick="cancelEditObj()">Annulla</button>` : ''}</div></div>
     ${S.objectives.map((o, i) => `<div class="card" style="${o.active ? '' : 'opacity:.6'}"><div class="row">
       <div class="grow"><b>${esc(o.title)}</b> <span class="pts">${o.points} pt</span>
-        <div class="small muted">${o.team_id ? '🎯 ' + esc(teamById(o.team_id)?.name || '?') : '🌍 Tutte le squadre'} · completato ${doneBy(o)}/${target(o)}
+        <div class="small muted">${o.team_id ? ' ' + esc(teamById(o.team_id)?.name || '?') : 'Tutte le squadre'} · completato ${doneBy(o)}/${target(o)}
         ${o.active ? '' : ' · <span class="badge hid">nascosto</span>'}</div>
         ${o.description ? `<div class="small muted" style="white-space:pre-wrap;margin-top:4px">${esc(o.description)}</div>` : ''}</div></div>
       <div class="row" style="margin-top:8px">
-        <button class="btn sm ghost" onclick="moveObj('${o.id}',-1)" ${i === 0 ? 'disabled' : ''}>↑</button>
-        <button class="btn sm ghost" onclick="moveObj('${o.id}',1)" ${i === S.objectives.length - 1 ? 'disabled' : ''}>↓</button>
-        <button class="btn sm" onclick="editObjective('${o.id}')">✏️ Modifica</button>
-        <button class="btn sm" onclick="run(sb.from('objectives').update({active:${!o.active}}).eq('id','${o.id}'))">${o.active ? '🙈 Nascondi' : '👁 Mostra'}</button>
-        <button class="btn sm danger" onclick="deleteObjective('${o.id}')">🗑</button></div></div>`).join('') || '<div class="card empty">Nessun obiettivo ancora.</div>'}`;
+        <button class="btn sm ghost" onclick="moveObj('${o.id}',-1)" ${i === 0 ? 'disabled' : ''}>Su</button>
+        <button class="btn sm ghost" onclick="moveObj('${o.id}',1)" ${i === S.objectives.length - 1 ? 'disabled' : ''}>Giù</button>
+        <button class="btn sm" onclick="editObjective('${o.id}')">Modifica</button>
+        <button class="btn sm" onclick="run(sb.from('objectives').update({active:${!o.active}}).eq('id','${o.id}'))">${o.active ? 'Nascondi' : 'Mostra'}</button>
+        <button class="btn sm danger" onclick="deleteObjective('${o.id}')">Elimina</button></div></div>`).join('') || '<div class="card empty">Nessun obiettivo ancora.</div>'}`;
 }
 function editObjective(id) {
   const o = objById(id); S.editingObj = id;
@@ -1322,7 +1399,7 @@ function adminProofs() {
   const avail = list.filter(s => !s.file_deleted);
   return `<div class="card"><div class="row"><select class="grow" style="flex:1" onchange="S.proofFilter=this.value;render()">
       <option value="">Tutte le squadre (${S.submissions.length})</option>${S.teams.map(t => `<option value="${t.id}" ${S.proofFilter === t.id ? 'selected' : ''}>${esc(t.name)}</option>`).join('')}</select>
-      <button class="btn gold" onclick="zipProofs()" ${avail.length ? '' : 'disabled'}>⬇︎ ZIP (${avail.length})</button></div>
+      <button class="btn gold" onclick="zipProofs()" ${avail.length ? '' : 'disabled'}>Scarica ZIP (${avail.length})</button></div>
       <p class="muted small" style="margin:8px 0 0">Gli originali sono scaricati senza ricompressione. ZIP: ${fmtSize(avail.reduce((a, s) => a + (s.file_size || 0), 0))}</p></div>
     ${list.map(s => {
       const o = objById(s.objective_id), t = teamById(s.team_id), p = partById(s.participant_id);
@@ -1331,9 +1408,9 @@ function adminProofs() {
         <div class="small muted"><span class="dot" style="background:${esc(t ? t.color : '#777')}"></span> ${esc(t ? t.name : '?')} · ${esc(p ? p.name : '?')} · ${fmtDate(s.created_at)} · ${fmtSize(s.file_size)}</div>
         <div style="margin-top:4px">${s.revoked ? '<span class="badge err">revocata</span> ' : ''}${s.file_deleted ? '<span class="badge hid">file eliminato</span>' : ''}</div>
         <div class="row" style="margin-top:8px">
-          ${s.file_deleted ? '' : `<button class="btn sm gold" onclick="downloadOriginal('${s.id}')">⬇︎ Originale</button>`}
-          <button class="btn sm" onclick="toggleRevoke('${s.id}')">${s.revoked ? '↩︎ Ripristina' : '⛔ Revoca'}</button>
-          ${s.file_deleted ? '' : `<button class="btn sm ghost" onclick="deleteFile('${s.id}')" title="Elimina file per liberare spazio">🗑 File</button>`}</div></div></div>`;
+          ${s.file_deleted ? '' : `<button class="btn sm gold" onclick="downloadOriginal('${s.id}')">Scarica originale</button>`}
+          <button class="btn sm" onclick="toggleRevoke('${s.id}')">${s.revoked ? 'Ripristina' : 'Revoca'}</button>
+          ${s.file_deleted ? '' : `<button class="btn sm ghost" onclick="deleteFile('${s.id}')" title="Elimina file per liberare spazio">Elimina file</button>`}</div></div></div>`;
     }).join('') || '<div class="card empty">Nessuna prova caricata.</div>'}`;
 }
 function niceName(s) {
@@ -1384,7 +1461,7 @@ async function zipProofs() {
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 60000);
     S.busy = false; closeModal();
-    toast(failed ? `ZIP pronto, ${failed} file non scaricati` : 'ZIP pronto ✅', failed ? 'err' : 'ok');
+    toast(failed ? `ZIP pronto, ${failed} file non scaricati` : 'ZIP pronto', failed ? 'err' : 'ok');
   } catch (e) { S.busy = false; closeModal(); alert('Errore ZIP: ' + errMsg(e)); }
 }
 
@@ -1400,7 +1477,7 @@ function adminScores() {
       <input data-draft="a-reason" id="a-reason" placeholder="Motivo (es. penalità ritardo)" style="margin-top:8px">
       <button class="btn primary block" style="margin-top:8px" onclick="addAdjustment()">Applica</button>
       <ul class="list">${S.adjustments.map(a => `<li><span>${esc(teamById(a.team_id)?.name || '?')} · ${esc(a.reason || '—')} <span class="muted small">${fmtDate(a.created_at)}</span></span>
-        <span><b>${a.points > 0 ? '+' : ''}${a.points}</b> <button class="btn sm ghost" onclick="delAdjustment('${a.id}')">✕</button></span></li>`).join('')}</ul></div>
+        <span><b>${a.points > 0 ? '+' : ''}${a.points}</b> <button class="btn sm ghost" onclick="delAdjustment('${a.id}')">Elimina</button></span></li>`).join('')}</ul></div>
     <div class="card"><h3>Partecipanti</h3><table><tr><th>Nome</th><th>Squadra</th><th class="n">Prove</th><th class="n">Punti</th></tr>
       ${people.map(x => `<tr><td>${esc(x.p.name)}</td><td class="small">${esc(teamById(x.p.team_id)?.name || '—')}</td><td class="n">${x.n}</td><td class="n pts">${x.pts}</td></tr>`).join('')}</table>
       <p class="muted small">Punti personali = punti degli obiettivi di cui ha caricato la prova.</p></div>`;
@@ -1418,26 +1495,22 @@ function adminSettings() {
   const st = S.settings;
   const used = S.submissions.filter(s => !s.file_deleted).reduce((a, s) => a + (s.file_size || 0), 0);
   const pct = Math.min(100, used / STORAGE_QUOTA * 100);
-  return `<div class="card"><h3>🎾 Invito</h3>
-      <div class="row"><div class="grow" style="min-width:140px"><label class="f">Festeggiato</label><input data-draft="s-iname" id="s-iname" value="${esc(st.invite_name || '')}"></div>
-      <div style="width:90px"><label class="f">Anni</label><input data-draft="s-iage" id="s-iage" type="number" inputmode="numeric" value="${esc(st.invite_age ?? 30)}"></div></div>
-      <label class="f">Data della festa</label><input data-draft="s-idate" id="s-idate" type="date" value="${esc(st.invite_date || '')}">
-      <label class="f">Dettagli (luogo, orario, dress code…)</label><textarea data-draft="s-idet" id="s-idet" placeholder="Es. Ore 20:30 · Circolo …">${esc(st.invite_details || '')}</textarea>
-      <button class="btn primary block" style="margin-top:10px" onclick="saveInvite()">Salva invito</button>
-      <button class="btn ghost block" style="margin-top:8px" onclick="previewInvite()">👁 Anteprima</button></div>
-    <div class="card"><h3>Nome dell'app</h3><div class="row">
-      <input class="grow" style="flex:1" data-draft="s-title" id="s-title" value="${esc(st.title)}">
-      <button class="btn" onclick="saveTitle()">Salva</button></div></div>
+  const game = !!st.game_started;
+  return `<div class="card"><h3>Gioco</h3>
+      <p class="small muted" style="margin-top:0">${game
+        ? 'Il gioco è <b style="color:var(--text)">avviato</b>: tutti vedono Obiettivi e Classifica.'
+        : 'Il gioco <b style="color:var(--text)">non è ancora avviato</b>: gli invitati vedono solo Invito e Passaggi. Prepara squadre e obiettivi, poi avvialo.'}</p>
+      <button class="btn ${game ? '' : 'primary'} block" onclick="toggleGame()">${game ? 'Nascondi di nuovo Obiettivi e Classifica' : 'Avvia il gioco'}</button></div>
     <div class="card"><h3>Spazio file</h3><div class="bar"><i style="width:${pct}%"></i></div>
-      <p class="small muted">${fmtSize(used)} di prove su 1 GB (${pct.toFixed(0)}%). Per liberare spazio: scarica gli originali e usa "🗑 File" nelle Prove.</p></div>
+      <p class="small muted">${fmtSize(used)} di prove su 1 GB (${pct.toFixed(0)}%). Per liberare spazio: scarica gli originali e usa "Elimina file" nelle Prove.</p></div>
     <div class="card"><h3>Cambia PIN admin</h3>
       <input id="pin1" type="password" inputmode="numeric" placeholder="Nuovo PIN (min 4)">
       <input id="pin2" type="password" inputmode="numeric" placeholder="Ripeti PIN" style="margin-top:8px">
       <button class="btn block" style="margin-top:8px" onclick="changePin()">Cambia PIN</button></div>
-    <div class="card" style="border-color:var(--err)"><h3>⚠️ Reset</h3>
-      <p class="small muted"><b>Azzera partita</b>: cancella prove, file e bonus. Restano invitati, risposte, squadre, obiettivi e notizie (ideale dopo le prove generali).</p>
-      <button class="btn danger block" onclick="doReset(false)">Azzera partita</button>
-      <p class="small muted" style="margin-top:14px"><b>Reset totale</b>: cancella anche invitati e risposte, squadre, obiettivi, notizie e scollega tutti i telefoni.</p>
+    <div class="card" style="border-color:var(--err)"><h3>Reset</h3>
+      <p class="small muted"><b>Azzera il gioco</b>: cancella squadre, obiettivi, prove con i loro file e bonus, e rimette il gioco in attesa. Restano invitati, risposte, intolleranze e passaggi.</p>
+      <button class="btn danger block" onclick="doReset('game')">Azzera il gioco</button>
+      <p class="small muted" style="margin-top:14px"><b>Reset totale</b>: cancella anche invitati e risposte, passaggi, notizie e scollega tutti i telefoni.</p>
       <button class="btn danger block" onclick="doReset(true)">Reset totale</button></div>
     <button class="btn ghost block" onclick="adminLogout()">Esci dalla modalità admin su questo dispositivo</button>`;
 }
@@ -1461,7 +1534,7 @@ async function changePin() {
   if (a.length < 4) return toast('Almeno 4 caratteri', 'err'); if (a !== b) return toast('I PIN non coincidono', 'err');
   const { error } = await sb.rpc('admin_set_pin', { p_new: a });
   if (error) return toast(errMsg(error), 'err');
-  $('#pin1').value = $('#pin2').value = ''; toast('PIN cambiato ✅', 'ok');
+  $('#pin1').value = $('#pin2').value = ''; toast('PIN cambiato', 'ok');
 }
 async function listFolder(bucket, folder) {
   const out = []; let offset = 0;
@@ -1486,9 +1559,15 @@ async function removePaths(bucket, paths) {
     if (error) throw error;
   }
 }
-async function doReset(full) {
+async function toggleGame() {
+  const on = !S.settings.game_started;
+  if (on && !confirm('Avviare il gioco? Tutti gli invitati vedranno Obiettivi (se sono in una squadra) e Classifica.')) return;
+  await run(sb.from('settings').update({ game_started: on }).eq('id', 1), on ? 'Gioco avviato' : 'Obiettivi e Classifica nascosti');
+}
+async function doReset(mode) {
+  const full = mode === true;
   const word = full ? 'RESET TOTALE' : 'AZZERA';
-  const ans = prompt(`${full ? 'Cancella TUTTO: invitati, risposte, squadre, obiettivi, notizie, prove, file.' : 'Cancella tutte le prove, i file e i bonus.'}\nOperazione irreversibile. Scrivi ${word} per confermare:`);
+  const ans = prompt(`${full ? 'Cancella TUTTO: invitati, risposte, squadre, obiettivi, notizie, prove, file.' : 'Cancella squadre, obiettivi, prove (con i file) e bonus. Invitati e risposte restano.'}\nOperazione irreversibile. Scrivi ${word} per confermare:`);
   if ((ans || '').trim().toUpperCase() !== word) return toast('Reset annullato');
   S.busy = true;
   try {
@@ -1496,7 +1575,7 @@ async function doReset(full) {
     await removePaths(BUCKET, await listAllFiles(BUCKET));
     if (full) await removePaths(NEWS_BUCKET, await listAllFiles(NEWS_BUCKET));
     showProgress('Azzero il database…', 0.8);
-    const { error } = await sb.rpc('admin_reset', { p_full: full });
+    const { error } = full ? await sb.rpc('admin_reset', { p_full: true }) : await sb.rpc('admin_reset_game');
     if (error) throw error;
     S.busy = false; closeModal(); S.urlCache = {};
     toast('Reset completato', 'ok');
@@ -1505,7 +1584,7 @@ async function doReset(full) {
 }
 async function adminLogout() {
   if (!confirm('Uscire dalla modalità admin su questo dispositivo? Potrai rientrare col PIN.')) return;
-  await sb.rpc('admin_logout'); S.tab = 'notizie'; await reload();
+  await sb.rpc('admin_logout'); S.tab = 'invito'; await reload();
 }
 
 init();
