@@ -1528,6 +1528,8 @@ function adminSettings() {
     <div class="card" style="border-color:var(--err)"><h3>Reset</h3>
       <p class="small muted"><b>Azzera il gioco</b>: cancella squadre, obiettivi, prove con i loro file e bonus, e rimette il gioco in attesa. Restano invitati, risposte, intolleranze e passaggi.</p>
       <button class="btn danger block" onclick="doReset('game')">Azzera il gioco</button>
+      <p class="small muted" style="margin-top:14px"><b>Cancella tutto tranne gli obiettivi</b>: cancella invitati, risposte, intolleranze, passaggi, squadre, prove, bonus e notizie, e scollega tutti i telefoni. Gli obiettivi restano pronti (quelli assegnati a una squadra diventano per tutte le squadre).</p>
+      <button class="btn danger block" onclick="doReset('keep')">Cancella tutto tranne gli obiettivi</button>
       <p class="small muted" style="margin-top:14px"><b>Reset totale</b>: cancella anche invitati e risposte, passaggi, notizie e scollega tutti i telefoni.</p>
       <button class="btn danger block" onclick="doReset(true)">Reset totale</button></div>
     <button class="btn ghost block" onclick="adminLogout()">Esci dalla modalità admin su questo dispositivo</button>`;
@@ -1583,17 +1585,21 @@ async function toggleGame() {
   await run(sb.from('settings').update({ game_started: on }).eq('id', 1), on ? 'Gioco avviato' : 'Obiettivi e Classifica nascosti');
 }
 async function doReset(mode) {
-  const full = mode === true;
-  const word = full ? 'RESET TOTALE' : 'AZZERA';
-  const ans = prompt(`${full ? 'Cancella TUTTO: invitati, risposte, squadre, obiettivi, notizie, prove, file.' : 'Cancella squadre, obiettivi, prove (con i file) e bonus. Invitati e risposte restano.'}\nOperazione irreversibile. Scrivi ${word} per confermare:`);
+  const full = mode === true, keep = mode === 'keep';
+  const word = full ? 'RESET TOTALE' : keep ? 'CANCELLA' : 'AZZERA';
+  const what = full ? 'Cancella TUTTO: invitati, risposte, squadre, obiettivi, notizie, prove, file.'
+    : keep ? 'Cancella invitati, risposte, passaggi, squadre, prove (con i file), bonus e notizie. Restano solo gli obiettivi.'
+    : 'Cancella squadre, obiettivi, prove (con i file) e bonus. Invitati e risposte restano.';
+  const ans = prompt(`${what}\nOperazione irreversibile. Scrivi ${word} per confermare:`);
   if ((ans || '').trim().toUpperCase() !== word) return toast('Reset annullato');
   S.busy = true;
   try {
     showProgress('Elimino i file…', 0.2);
     await removePaths(BUCKET, await listAllFiles(BUCKET));
-    if (full) await removePaths(NEWS_BUCKET, await listAllFiles(NEWS_BUCKET));
+    if (full || keep) await removePaths(NEWS_BUCKET, await listAllFiles(NEWS_BUCKET));
     showProgress('Azzero il database…', 0.8);
-    const { error } = full ? await sb.rpc('admin_reset', { p_full: true }) : await sb.rpc('admin_reset_game');
+    const { error } = full ? await sb.rpc('admin_reset', { p_full: true })
+      : keep ? await sb.rpc('admin_reset_keep_objectives') : await sb.rpc('admin_reset_game');
     if (error) throw error;
     S.busy = false; closeModal(); S.urlCache = {};
     toast('Reset completato', 'ok');
