@@ -320,7 +320,7 @@ const guestOf = pid => S.guests.find(g => g.participant_id === pid);
 const validSubs = () => S.submissions.filter(s => !s.revoked);
 const isVideo = s => (s.file_type || '').startsWith('video/') || /\.(mov|mp4|m4v|webm|3gp)$/i.test(s.file_path || '');
 const errMsg = e => (e && (e.message || e.error_description || e.error)) || String(e);
-const slug = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'x';
+const slug = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'x';
 const normName = s => String(s || '').trim().replace(/\s+/g, ' ').toLowerCase();
 const linkify = s => esc(s).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
 const RSVP = { si: ['', 'Ci sarò', 'ok'], forse: ['', 'Forse', 'warn'], no: ['', 'Non ci sarò', 'err'] };
@@ -1216,6 +1216,7 @@ function adminGuests() {
     <div class="card"><div class="row"><div class="grow"><b>${c('si') + c('forse') + plusOnes}</b> <span class="muted">persone possibili (sì + forse${plusOnes ? `, di cui ${plusOnes} accompagnatori` : ''})</span>
       <div class="small muted">Sicuri: ${c('si') + coming.filter(x => x.r === 'si' && x.g.plus_one).length} · auto: ${coming.filter(x => x.g && x.g.car === 'si').length} · cercano passaggio: ${coming.filter(x => x.g && x.g.car === 'no' && !x.g.ride_with).length}</div></div>
       <button class="btn sm gold" onclick="exportGuests()">Esporta CSV</button></div></div>
+    ${plusOneCard(rows)}
     <div class="card"><h3>Intolleranze ed esigenze</h3>
       ${Object.keys(agg).length ? `<ul class="list">${DIET_TAGS.filter(t => agg[t]).map(t => `<li><span><b>${esc(t)}</b> <span class="muted small">· ${agg[t].map(esc).join(', ')}</span></span><span class="pts">${agg[t].length}</span></li>`).join('')}</ul>` : '<div class="muted small">Nessuna segnalata finora.</div>'}
       ${notes.length ? `<div class="muted small" style="margin-top:10px">Note</div><ul class="list">${notes.map(x => `<li><span><b>${esc(x.p.name)}</b>: ${esc(x.g.intolerances)}</span></li>`).join('')}</ul>` : ''}
@@ -1233,8 +1234,25 @@ function adminGuests() {
     }).join('') || '<div class="muted small">Nessuno.</div>'}</div>
     <p class="muted small">Chi risponde all'invito compare qui in automatico. Per formare le squadre vai su Squadre.</p>`;
 }
+/* ---------- riepilogo accompagnatori */
+function plusOneCard(rows) {
+  const by = k => rows.filter(x => x.r === k);
+  const plusOf = k => by(k).filter(x => x.g && x.g.plus_one);
+  const ps = plusOf('si'), pf = plusOf('forse');
+  const line = (lab, people, plus) => `<div class="kv"><span>${lab}</span><b>${people} + ${plus} ${plus === 1 ? 'accompagnatore' : 'accompagnatori'} = ${people + plus}</b></div>`;
+  const names = list => list.map(x => `${esc(x.g.plus_one_name || '+1')} <span class="muted small">(con ${esc(x.p.name)})</span>`).join(', ');
+  return `<div class="card"><h3>Accompagnatori (+1)</h3>
+    <div class="kv"><span>+1 di chi ha detto Sì</span><b>${ps.length}</b></div>
+    <div class="kv"><span>+1 di chi ha detto Forse</span><b>${pf.length}</b></div>
+    ${line('Persone sicure', by('si').length, ps.length)}
+    ${line('Persone in forse', by('forse').length, pf.length)}
+    <div class="kv"><span>Totale possibile</span><b>${by('si').length + ps.length + by('forse').length + pf.length}</b></div>
+    ${ps.length ? `<p class="small" style="margin:12px 0 0"><span class="muted">+1 sicuri:</span> ${names(ps)}</p>` : ''}
+    ${pf.length ? `<p class="small" style="margin:8px 0 0"><span class="muted">+1 in forse:</span> ${names(pf)}</p>` : ''}
+    <p class="small muted" style="margin:10px 0 0">I +1 di chi ha risposto "Non ci sarò" non vengono contati.</p></div>`;
+}
 /* ---------- controlli: doppioni e +1 registrati anche da soli */
-function nameKey(n) { return normName(n).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z ]/g, '').split(' ').filter(Boolean).sort().join(' '); }
+function nameKey(n) { return normName(n).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z ]/g, '').split(' ').filter(Boolean).sort().join(' '); }
 function editDist(a, b) {
   const d = Array.from({ length: a.length + 1 }, (_, i) => [i]);
   for (let j = 1; j <= b.length; j++) d[0][j] = j;
