@@ -1219,19 +1219,134 @@ function adminGuests() {
     <div class="card"><h3>Intolleranze ed esigenze</h3>
       ${Object.keys(agg).length ? `<ul class="list">${DIET_TAGS.filter(t => agg[t]).map(t => `<li><span><b>${esc(t)}</b> <span class="muted small">· ${agg[t].map(esc).join(', ')}</span></span><span class="pts">${agg[t].length}</span></li>`).join('')}</ul>` : '<div class="muted small">Nessuna segnalata finora.</div>'}
       ${notes.length ? `<div class="muted small" style="margin-top:10px">Note</div><ul class="list">${notes.map(x => `<li><span><b>${esc(x.p.name)}</b>: ${esc(x.g.intolerances)}</span></li>`).join('')}</ul>` : ''}
-      ${pending ? `<p class="muted small" style="margin:10px 0 0"> ${pending} tra sì/forse non hanno ancora compilato i dettagli.</p>` : ''}</div>
+      ${pending ? `<p class="muted small" style="margin:10px 0 0">${pending} tra sì/forse non hanno ancora compilato i dettagli.</p>` : ''}</div>
+    ${issuesCard(rows)}
     <div class="subtabs" style="padding-top:0">${f('', 'Tutti')}${f('si', 'Sì')}${f('forse', 'Forse')}${f('no', 'No')}${f('none', 'Senza risposta')}</div>
     <div class="card">${list.map(x => {
       const t = teamById(x.p.team_id), tags = (x.g && x.g.diet_tags || []).filter(t => t !== 'Nessuna');
       return `<div class="member" style="align-items:flex-start"><div class="grow" style="min-width:150px"><b>${esc(x.p.name)}</b>
           <div class="small muted">${t ? `<span class="dot" style="background:${esc(t.color)}"></span> ${esc(t.name)}` : 'senza squadra'}${x.g ? ' · ' + fmtDate(x.g.updated_at) : ''}</div>
-          ${tags.length || (x.g && x.g.intolerances) ? `<div class="small" style="margin-top:4px"> ${esc([...tags, x.g.intolerances].filter(Boolean).join(' · '))}</div>` : ''}
+          ${tags.length || (x.g && x.g.intolerances) ? `<div class="small" style="margin-top:4px">Intolleranze: ${esc([...tags, x.g.intolerances].filter(Boolean).join(' · '))}</div>` : ''}
           ${x.g && x.g.plus_one ? `<div class="small" style="margin-top:4px">+1: ${esc(x.g.plus_one_name || '')}${x.g.plus_one_notes ? ' · ' + esc(x.g.plus_one_notes) : ''}</div>` : ''}
           ${x.g && x.g.car ? `<div class="small" style="margin-top:4px">${carText(x.g)}</div>` : ''}</div>
-        ${rsvpBadge(x.r)}</div>`;
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">${rsvpBadge(x.r)}<button class="btn sm" onclick="editGuest('${x.p.id}')">Modifica</button></div></div>`;
     }).join('') || '<div class="muted small">Nessuno.</div>'}</div>
     <p class="muted small">Chi risponde all'invito compare qui in automatico. Per formare le squadre vai su Squadre.</p>`;
 }
+/* ---------- controlli: doppioni e +1 registrati anche da soli */
+function nameKey(n) { return normName(n).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z ]/g, '').split(' ').filter(Boolean).sort().join(' '); }
+function editDist(a, b) {
+  const d = Array.from({ length: a.length + 1 }, (_, i) => [i]);
+  for (let j = 1; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++)
+    d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+  return d[a.length][b.length];
+}
+function sameName(a, b) {
+  const x = nameKey(a), y = nameKey(b);
+  if (!x || !y) return false;
+  return x === y || (Math.min(x.length, y.length) >= 8 && editDist(x, y) <= 2);
+}
+function findIssues(rows) {
+  const dups = [], plus = [], seen = new Set();
+  for (let i = 0; i < rows.length; i++) for (let j = i + 1; j < rows.length; j++)
+    if (sameName(rows[i].p.name, rows[j].p.name)) dups.push([rows[i], rows[j]]);
+  rows.forEach(x => {
+    if (!x.g || !x.g.plus_one || !x.g.plus_one_name) return;
+    const other = rows.find(y => y.p.id !== x.p.id && sameName(y.p.name, x.g.plus_one_name));
+    if (other && !seen.has(x.p.id)) { seen.add(x.p.id); plus.push([x, other]); }
+  });
+  return { dups, plus };
+}
+function completeness(x) { return (x.g ? 2 : 0) + (x.g && x.g.details_done ? 2 : 0) + S.devices.filter(d => d.participant_id === x.p.id).length; }
+function issuesCard(rows) {
+  const { dups, plus } = findIssues(rows);
+  if (!dups.length && !plus.length) return '';
+  const dupHtml = dups.map(([a, b]) => {
+    const [k, d] = completeness(a) >= completeness(b) ? [a, b] : [b, a];
+    return `<div class="member" style="align-items:flex-start"><div class="grow" style="min-width:170px"><b>${esc(a.p.name)}</b> e <b>${esc(b.p.name)}</b>
+        <div class="small muted">Sembra la stessa persona registrata due volte.</div></div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+        <button class="btn sm gold" onclick="mergeGuests('${k.p.id}','${d.p.id}')">Tieni ${esc(k.p.name)}</button>
+        <button class="btn sm" onclick="mergeGuests('${d.p.id}','${k.p.id}')">Tieni ${esc(d.p.name)}</button></div></div>`;
+  }).join('');
+  const plusHtml = plus.map(([x, o]) => `<div class="member" style="align-items:flex-start"><div class="grow" style="min-width:170px"><b>${esc(x.p.name)}</b> porta come +1 <b>${esc(x.g.plus_one_name)}</b>
+        <div class="small muted">${esc(o.p.name)} si è registrato anche da solo: così viene contato due volte.</div></div>
+      <button class="btn sm gold" onclick="dropPlusOne('${x.p.id}')">Togli il +1 a ${esc(x.p.name.split(' ')[0])}</button></div>`).join('');
+  return `<div class="card" style="border-color:var(--warn)"><h3>Da controllare</h3>${dupHtml}${plusHtml}</div>`;
+}
+async function mergeGuests(keep, drop) {
+  const k = partById(keep), d = partById(drop);
+  if (!confirm(`Tenere «${k.name}» e cancellare «${d.name}»?\nI telefoni, i passaggi e le prove di «${d.name}» passano a «${k.name}». La risposta di «${k.name}» resta quella valida (se non ne ha, prende quella dell'altro).`)) return;
+  closeModal();
+  await run(sb.rpc('admin_merge_participants', { p_keep: keep, p_drop: drop }), 'Invitati uniti');
+}
+async function dropPlusOne(pid) {
+  const p = partById(pid);
+  if (!confirm(`Togliere l'accompagnatore a ${p.name}?`)) return;
+  await run(sb.from('guest_info').update({ plus_one: false, plus_one_name: null, plus_one_notes: null, updated_at: new Date().toISOString() }).eq('participant_id', pid), 'Accompagnatore tolto');
+}
+
+/* ---------- l'admin modifica le scelte di un invitato */
+function editGuest(pid) {
+  const p = partById(pid), g = guestOf(pid) || {};
+  const opt = (v, l, cur) => `<option value="${v}" ${cur === v ? 'selected' : ''}>${l}</option>`;
+  const others = S.participants.filter(x => x.id !== pid).sort((a, b) => a.name.localeCompare(b.name));
+  const drivers = others.filter(x => guestOf(x.id)?.car === 'si');
+  const rest = others.filter(x => !drivers.includes(x));
+  const tags = (g.diet_tags || []);
+  showModal(`<h3>${esc(p.name)}</h3>
+    <label class="f">Nome e cognome</label><input id="eg-name" value="${esc(p.name)}">
+    <label class="f">Risposta all'invito</label>
+    <select id="eg-rsvp">${opt('', 'Nessuna risposta', g.rsvp || '')}${opt('si', 'Ci sarò', g.rsvp)}${opt('forse', 'Forse', g.rsvp)}${opt('no', 'Non ci sarò', g.rsvp)}</select>
+    <label class="f">Accompagnatore</label>
+    <label class="row small"><input type="checkbox" id="eg-plus" ${g.plus_one ? 'checked' : ''}> Porta un +1</label>
+    <input id="eg-plusname" placeholder="Nome e cognome del +1" value="${esc(g.plus_one_name || '')}" style="margin-top:8px">
+    <input id="eg-plusnotes" placeholder="Intolleranze del +1" value="${esc(g.plus_one_notes || '')}" style="margin-top:8px">
+    <label class="f">Intolleranze</label>
+    <div class="tags" id="eg-tags">${DIET_TAGS.map(t => `<label class="row small" style="gap:6px;width:auto"><input type="checkbox" value="${esc(t)}" ${tags.includes(t) ? 'checked' : ''}>${esc(t)}</label>`).join('')}</div>
+    <input id="eg-intol" placeholder="Altro / dettagli" value="${esc(g.intolerances || '')}">
+    <label class="f">Viaggio</label>
+    <select id="eg-car">${opt('', 'Non indicato', g.car || '')}${opt('si', 'Ha l\'auto', g.car)}${opt('no', 'Non ha l\'auto', g.car)}</select>
+    <div class="row" style="margin-top:8px"><div style="width:120px"><label class="f" style="margin-top:0">Posti liberi</label><input id="eg-seats" type="number" min="0" max="8" value="${g.car_seats ?? ''}"></div>
+      <div class="grow"><label class="f" style="margin-top:0">Va con (se senza auto)</label><select id="eg-ride"><option value="">Nessuno / da organizzare</option>
+        ${drivers.length ? `<optgroup label="Hanno l'auto">${drivers.map(x => opt(x.id, esc(x.name), g.ride_with)).join('')}</optgroup>` : ''}
+        <optgroup label="Altri invitati">${rest.map(x => opt(x.id, esc(x.name), g.ride_with)).join('')}</optgroup></select></div></div>
+    <label class="f">Passeggeri non nell'app (se ha l'auto, separati da virgola)</label>
+    <input id="eg-others" value="${esc((g.car_others || []).join(', '))}">
+    <div class="row" style="margin-top:16px"><button class="btn primary grow" onclick="saveGuestEdit('${pid}')">Salva</button><button class="btn" onclick="closeModal()">Annulla</button></div>
+    <label class="f" style="margin-top:20px">Registrato più volte?</label>
+    <div class="row"><select id="eg-merge" class="grow" style="flex:1"><option value="">Scegli il doppione da cancellare</option>${others.map(x => opt(x.id, esc(x.name), '')).join('')}</select>
+      <button class="btn sm" onclick="const v=document.getElementById('eg-merge').value; if(v) mergeGuests('${pid}', v); else toast('Scegli il doppione')">Unisci</button></div>
+    <p class="small muted" style="margin:6px 0 0">Tiene questa scheda e cancella quella scelta, spostando qui i suoi telefoni e passaggi.</p>`);
+}
+async function saveGuestEdit(pid) {
+  const v = id => (document.getElementById(id).value || '').trim();
+  const name = v('eg-name'), rsvp = v('eg-rsvp') || null, car = v('eg-car') || null;
+  const plus = document.getElementById('eg-plus').checked;
+  if (!name) return toast('Il nome non può essere vuoto', 'err');
+  if (plus && !v('eg-plusname')) return toast('Scrivi il nome del +1', 'err');
+  const seats = parseInt(v('eg-seats'), 10);
+  const row = {
+    participant_id: pid, rsvp, updated_at: new Date().toISOString(),
+    plus_one: plus, plus_one_name: plus ? v('eg-plusname') : null, plus_one_notes: plus ? (v('eg-plusnotes') || null) : null,
+    diet_tags: [...document.querySelectorAll('#eg-tags input:checked')].map(i => i.value),
+    intolerances: v('eg-intol') || null,
+    car, car_seats: car === 'si' ? (isNaN(seats) ? 0 : Math.max(0, Math.min(8, seats))) : null,
+    ride_with: car === 'no' ? (v('eg-ride') || null) : null,
+    car_others: car === 'si' ? v('eg-others').split(',').map(x => x.trim()).filter(Boolean) : [],
+    details_done: true, intolerances_done: true
+  };
+  const old = guestOf(pid) || {};
+  const ops = [sb.from('guest_info').upsert(row, { onConflict: 'participant_id' })];
+  if (name !== partById(pid).name) ops.push(sb.from('participants').update({ name }).eq('id', pid));
+  if (old.car === 'si' && car !== 'si') ops.push(sb.from('guest_info').update({ ride_with: null }).eq('ride_with', pid));   // non guida più: liberi i passeggeri
+  const res = await Promise.all(ops);
+  const bad = res.find(r => r.error);
+  if (bad) return toast(errMsg(bad.error), 'err');
+  closeModal(); toast('Salvato', 'ok'); await reload();
+}
+
 function carText(g) {
   if (g.car === 'si') { const c = S.carpool.find(x => x.participant_id === g.participant_id);
     return `ha l'auto · ${c ? usedSeats(c) : 0}/${g.car_seats ?? 0} posti occupati${(g.car_others || []).length ? ' · con ' + esc(g.car_others.join(', ')) : ''}`; }
